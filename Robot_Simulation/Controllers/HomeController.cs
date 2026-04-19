@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Robot_Simulation.Models;
 using System.Diagnostics;
 
-namespace Robot_Simulation.Controllers
+namespace Robots_Simulation.Controllers
 {
     public class HomeController : Controller
     {
@@ -10,10 +10,17 @@ namespace Robot_Simulation.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult NewGame()
         {
-            return View();
+            return Content("Új játék");
+        }
+        public IActionResult LoadGame()
+        {
+            return Content("Játék betöltése");
+        }
+        public IActionResult Exit()
+        {
+            return Redirect("https://google.com");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -23,3 +30,4 @@ namespace Robot_Simulation.Controllers
         }
     }
 }
+
