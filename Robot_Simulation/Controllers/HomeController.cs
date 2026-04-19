@@ -12,7 +12,7 @@ namespace Robots_Simulation.Controllers
         }
         public IActionResult NewGame()
         {
-            return Content("Új játék");
+            return View();
         }
         public IActionResult LoadGame()
         {

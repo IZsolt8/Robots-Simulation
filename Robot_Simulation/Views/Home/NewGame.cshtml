@@ -1,0 +1,63 @@
+﻿@model Robot_Simulation.Models.NewGame
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    .create-header {
+        text-align: center;
+    }
+
+    .create-wrapper {
+        display: flex;
+        justify-content: center;
+        padding-top: 20px;
+    }
+
+    .create-form-container {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .input-group-spacing {
+        margin-bottom: 30px;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+<div class="create-header">
+    <h1>Create</h1>
+    <h4>Game</h4>
+</div>
+<hr />
+
+<div class="create-wrapper">
+    <div class="create-form-container">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group input-group-spacing">
+                <label asp-for="GameName" class="control-label"></label>
+                <input asp-for="GameName" class="form-control" />
+                <span asp-validation-for="GameName" class="text-danger"></span>
+            </div>
+            
+            <div class="action-buttons">
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
