@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Robot_Simulation.Models.Game>
+
+@{
+    ViewData["Title"] = "Játék betöltése";
+}
+
+<h1>Játék betöltése</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Játék neve
+            </th>
+            <th>
+                Egyenleg
+            </th>
+            <th>
+                Raktár mérete
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GameName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Balance) $
+                </td>
+                <td>
+                    @item.WareHouse.StorgarSize
+                </td>
+                <td>
+                    <a asp-action="Play" asp-route-id="@item.ID">Betöltés</a> |
+                    <a asp-action="DeleteGame" asp-route-id="@item.ID">Törlés</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary"></a>
+</div>
