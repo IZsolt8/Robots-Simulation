@@ -32,8 +32,7 @@
 </style>
 
 <div class="create-header">
-    <h1>Create</h1>
-    <h4>Game</h4>
+    <h1>Játék Létrehozása</h1>
 </div>
 <hr />
 
@@ -48,8 +47,8 @@
             </div>
             
             <div class="action-buttons">
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Vissza</a>
+                <input type="submit" value="Létrehozás" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -60,4 +59,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
