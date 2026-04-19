@@ -1,3 +1,6 @@
+using Robot_Simulation.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Robot_Simulation
 {
     public class Program
@@ -5,6 +8,9 @@ namespace Robot_Simulation
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<RobotSimulationContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
