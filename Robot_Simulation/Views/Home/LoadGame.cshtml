@@ -4,13 +4,66 @@
     ViewData["Title"] = "Játék betöltése";
 }
 
-<h1>Játék betöltése</h1>
+<style>
+    .title {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .search_container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .search_group {
+        display: flex;
+        width: 100%;
+        max-width: 500px;
+        gap: 15px;
+    }
+
+    .search_style{
+        flex-grow: 1;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 1px solid #ced4da;
+        border-radius: 6px 6px 6px 6px; 
+        outline: none;
+    }
+
+    .search_button {
+        padding: 12px 25px;
+        font-size: 16px;
+        background-color: #d5d5d5;
+        color: black;
+        border: 1px solid black;
+        border-radius: 6px 6px 6px 6px;
+        cursor: pointer;
+    }
+
+        .search_button:hover {
+            filter: brightness(0.95);
+            color: black
+        }
+
+</style>
+
+
+<h1 class="title">Játék betöltése</h1>
+
+<form asp-action="Search" method="get" class="search_container">
+    <div class="search_group">
+        <input type="text" name="name" value="@ViewData["GameNameFilter"]" class="search_style" placeholder="Játék név" />
+        <button type="submit" class="search_button">Keresés</button>
+    </div>
+</form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Játék neve
+                Játék név
             </th>
             <th>
                 Egyenleg

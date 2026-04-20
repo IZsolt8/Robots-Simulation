@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Robot_Simulation.Data;
 using Robot_Simulation.Models;
 using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Robots_Simulation.Controllers
 {
@@ -97,6 +98,23 @@ namespace Robots_Simulation.Controllers
 
             return View(savedGames);
         }
+
+        public async Task<IActionResult> Search(string? name)
+        {
+            var game = _context.Games.Include(g => g.WareHouse).AsQueryable();
+            if (!string.IsNullOrEmpty(name))
+            {
+                game = game
+                .Where(p => p.GameName!.ToLower().Contains(name.ToLower()));
+                ViewData["GameNameFilter"] = name;
+            }
+
+            var search = await game
+            .OrderByDescending(g => g.ID)
+            .ToListAsync();
+            return View("LoadGame", search);
+        }
+
         public IActionResult Exit()
         {
             return Redirect("https://google.com");
