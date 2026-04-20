@@ -24,6 +24,9 @@ namespace Robots_Simulation.Controllers
             return View();
         }
 
+        // POST: Naplo/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,GameName,Balance,WarehouseId")] Game game)
@@ -43,9 +46,55 @@ namespace Robots_Simulation.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.WareHouses, "ID", "ID", game.WarehouseId);
             return View(game);
         }
+
+        // GET: Naplo/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _context.Games
+                .Include(n => n.WareHouse)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return View("LoadGame");
+        }
+
+        // POST: Naplo/Delete/5
+        [HttpPost, ActionName("DeleteGame")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var game = await _context.Games.FindAsync(id);
+
+            if (game != null)
+            {
+                var warehouse = await _context.WareHouses.FindAsync(game.WarehouseId);
+                if (warehouse != null)
+                {
+                    _context.WareHouses.Remove(warehouse);
+                }
+
+                _context.Games.Remove(game);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(LoadGame));
+        }
+
         public async Task<IActionResult> LoadGame()
         {
-            var savedGames = await _context.Games.Include(g => g.WareHouse).ToListAsync();
+            var savedGames = await _context.Games
+                .Include(g => g.WareHouse)
+                .OrderByDescending(g => g.ID)
+                .ToListAsync();
+
             return View(savedGames);
         }
         public IActionResult Exit()

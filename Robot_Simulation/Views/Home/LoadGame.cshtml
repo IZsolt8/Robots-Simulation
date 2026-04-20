@@ -35,8 +35,10 @@
                     @item.WareHouse.StorgarSize
                 </td>
                 <td>
-                    <a asp-action="Play" asp-route-id="@item.ID">Betöltés</a> |
-                    <a asp-action="DeleteGame" asp-route-id="@item.ID">Törlés</a>
+                    <a asp-action="LoadGame" asp-route-id="@item.ID" class="btn btn-primary">Betöltés</a> |
+                    <form asp-action="DeleteGame" asp-route-id="@item.ID" method="post" style="display:inline;">
+                        <input type="submit" value="Törlés" class="btn btn-danger" />
+                    </form>
                 </td>
             </tr>
         }
@@ -44,5 +46,5 @@
 </table>
 
 <div>
-    <a asp-action="Index" class="btn btn-secondary"></a>
+    <a asp-action="Index" class="btn btn-secondary">Vissza</a>
 </div>
