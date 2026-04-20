@@ -3,7 +3,7 @@
 }
 
 <style>
-    .menu-wrapper {
+    .menu {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -12,14 +12,14 @@
         background-color: transparent;
     }
 
-    .menu-buttons {
+    .buttons_div {
         display: flex;
         flex-direction: column;
         gap: 30px;
         width: 350px;
     }
 
-    .menu-btn {
+    .buttons {
         padding: clamp(15px, 2.5vh, 40px);
         text-align: center;
         font-size: clamp(18px, 2vw, 36px);
@@ -28,28 +28,20 @@
         color: black;
         border: 1px solid;
         display: block;
+        background-color: #d5d5d5;
+        border-color: Black;
     }
     
-        .menu-btn:hover {
+        .buttons:hover {
             filter: brightness(0.95);
             color: black
         }
-
-    .btn-new-load {
-        background-color: #f6f6f6;
-        border-color: #e0e0e0;
-    }
-
-    .btn-exit {
-        background-color: #f9d9d9;
-        border-color: #edbfbf;
-    }
 </style>
 
-<div class="menu-wrapper">
-    <div class="menu-buttons">
-        <a asp-action="NewGame" class="menu-btn btn-new-load">Új játék</a>
-        <a asp-action="LoadGame" class="menu-btn btn-new-load">Játék betöltése</a>
-        <a asp-action="Exit" class="menu-btn btn-exit">Kilépés</a>
+<div class="menu">
+    <div class="buttons_div">
+        <a asp-action="NewGame" class="buttons">Új játék</a>
+        <a asp-action="LoadGame" class="buttons">Játék betöltése</a>
+        <a asp-action="Exit" class="buttons">Kilépés</a>
     </div>
 </div>
