@@ -1,7 +1,26 @@
-﻿@model IEnumerable<Robot_Simulation.Models.Game>
+﻿@model Robot_Simulation.Models.Game
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Játék: @Model.GameName</h1>
+
+<div>
+    <h4>Részletek</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Egyenleg:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Balance $
+        </dd>
+        <dt class="col-sm-2">
+            Raktár ID:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.WarehouseId
+        </dd>
+    </dl>
+</div>

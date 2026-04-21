@@ -25,7 +25,7 @@ namespace Robots_Simulation.Controllers
             return View();
         }
 
-        // POST: Naplo/Create
+        // POST: Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -42,13 +42,13 @@ namespace Robots_Simulation.Controllers
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Games", new { id = game.ID });
             }
             ViewData["WarehouseId"] = new SelectList(_context.WareHouses, "ID", "ID", game.WarehouseId);
             return View(game);
         }
 
-        // GET: Naplo/Delete/5
+        // GET: /Delete/
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -67,7 +67,7 @@ namespace Robots_Simulation.Controllers
             return View("LoadGame");
         }
 
-        // POST: Naplo/Delete/5
+        // POST: /Delete/
         [HttpPost, ActionName("DeleteGame")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
