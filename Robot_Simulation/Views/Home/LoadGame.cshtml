@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Játék betöltése";
+    int currentPage = (int)ViewData["CurrentPage"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+    int totalCount = (int)ViewData["TotalCount"]!;
 }
 
 <style>
@@ -47,6 +50,17 @@
             color: black
         }
 
+    .page_selection {
+        display : flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .page_selection .pagination {
+        margin-bottom: 0;
+    }
+
 </style>
 
 
@@ -58,6 +72,8 @@
         <button type="submit" class="search_button">Keresés</button>
     </div>
 </form>
+
+<p class="text-center">Összesen: <strong>@totalCount</strong> találat.</p>
 
 <table class="table">
     <thead>
@@ -98,6 +114,45 @@
     </tbody>
 </table>
 
-<div>
+<div class="page_selection">
     <a asp-action="Index" class="btn btn-secondary">Vissza</a>
+    <nav>
+        <ul class="pagination">
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                           asp-action="LoadGame"
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-name="@ViewData["GameNameFilter"]">
+                        Előző
+                    </a>
+                </li>
+            }
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                           asp-action="LoadGame"
+                           asp-route-page="@i"
+                           asp-route-name="@ViewData["GameNameFilter"]">
+                        @i
+                    </a>
+                </li>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                           asp-action="LoadGame"
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-name="@ViewData["GameNameFilter"]">
+                        Következő
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>

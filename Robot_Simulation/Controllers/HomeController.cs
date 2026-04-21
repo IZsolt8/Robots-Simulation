@@ -89,31 +89,28 @@ namespace Robots_Simulation.Controllers
             return RedirectToAction(nameof(LoadGame));
         }
 
-        public async Task<IActionResult> LoadGame()
+        public async Task<IActionResult> LoadGame(string? name, int page = 1)
         {
-            var savedGames = await _context.Games
-                .Include(g => g.WareHouse)
-                .OrderByDescending(g => g.ID)
-                .ToListAsync();
-
-            return View(savedGames);
-        }
-
-        public async Task<IActionResult> Search(string? name)
-        {
-            var game = _context.Games.Include(g => g.WareHouse).AsQueryable();
+            int pageSize = 10;
+            var query = _context.Games.Include(g => g.WareHouse).AsQueryable();
             if (!string.IsNullOrEmpty(name))
             {
-                game = game
-                .Where(p => p.GameName!.ToLower().Contains(name.ToLower()));
-                ViewData["GameNameFilter"] = name;
+                query = query.Where(p => p.GameName!.ToLower().Contains(name.ToLower()));
             }
+            ViewData["GameNameFilter"] = name;
+            int totalCount = await query.CountAsync();
+            var games = await query
+                .OrderByDescending(g => g.ID)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = (int)Math.Ceiling(totalCount / (double)pageSize);
+            ViewData["TotalCount"] = totalCount;
 
-            var search = await game
-            .OrderByDescending(g => g.ID)
-            .ToListAsync();
-            return View("LoadGame", search);
+            return View(games);
         }
+
 
         public IActionResult Exit()
         {
