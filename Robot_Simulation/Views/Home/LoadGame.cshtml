@@ -66,7 +66,7 @@
 
 <h1 class="title">Játék betöltése</h1>
 
-<form asp-action="Search" method="get" class="search_container">
+<form asp-action="LoadGame" method="get" class="search_container">
     <div class="search_group">
         <input type="text" name="name" value="@ViewData["GameNameFilter"]" class="search_style" placeholder="Játék név" />
         <button type="submit" class="search_button">Keresés</button>
@@ -104,7 +104,7 @@
                     @item.WareHouse.StorgarSize
                 </td>
                 <td>
-                    <a asp-action="LoadGame" asp-route-id="@item.ID" class="btn btn-primary">Betöltés</a> |
+                    <a asp-controller="Games" asp-action="Index" asp-route-id="@item.ID" class="btn btn-primary">Betöltés</a> |
                     <form asp-action="DeleteGame" asp-route-id="@item.ID" method="post" style="display:inline;">
                         <input type="submit" value="Törlés" class="btn btn-danger" />
                     </form>
