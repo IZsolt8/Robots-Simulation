@@ -26,5 +26,37 @@ namespace Robot_Simulation.Controllers
             }
             return View(game);
         }
+
+        public async Task<IActionResult> RobotShop(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            return View(game);
+        }
+
+        public async Task<IActionResult> PackageList(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            return View(game);
+        }
     }
 }

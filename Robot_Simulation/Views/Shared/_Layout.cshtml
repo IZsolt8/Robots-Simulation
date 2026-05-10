@@ -8,13 +8,132 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Robots_Simulation.styles.css" asp-append-version="true" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar_item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background-color 0.3s, padding-left 0.3s;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar_item:hover {
+            background-color: #34495e;
+            padding-left: 25px;
+            border-left-color: #3498db;
+        }
+
+        .sidebar_icon {
+            font-size: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar_text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .main_wrapper {
+            margin-left: 200px;
+            flex: 1;
+            width: calc(100% - 200px);
+        }
+
+        .main_wrapper.full-width {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .container {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            max-width: 100% !important;
+            padding: 0;
+        }
+
+        main {
+            padding: 20px !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    @{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+        bool showSidebar = (controller == "Games" && (action == "Index" || action == "RobotShop" || action == "PackageList"));
+
+        int gameId = 0;
+        if (ViewContext.RouteData.Values.TryGetValue("id", out var idValue))
+        {
+            int.TryParse(idValue?.ToString(), out gameId);
+        }
+        else if (ViewContext.HttpContext.Request.Query.TryGetValue("id", out var queryId))
+        {
+            int.TryParse(queryId.ToString(), out gameId);
+        }
+    }
+
+    @if (showSidebar)
+    {
+        <div class="sidebar">
+            <a class="sidebar_item" href="/Games/Index?id=@gameId">
+                <span class="sidebar_icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="M160-200h80v-320h480v320h80v-426L480-754 160-626v426Zm-80 80v-560l400-160 400 160v560H640v-320H320v320H80Zm280 0v-80h80v80h-80Zm80-120v-80h80v80h-80Zm80 120v-80h80v80h-80ZM240-520h480-480Z" /></svg></span>
+                <span class="sidebar_text">Raktár</span>
+            </a>
+            <a class="sidebar_item" href="/Games/RobotShop?id=@gameId">
+                <span class="sidebar_icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM223.5-103.5Q200-127 200-160t23.5-56.5Q247-240 280-240t56.5 23.5Q360-193 360-160t-23.5 56.5Q313-80 280-80t-56.5-23.5Zm400 0Q600-127 600-160t23.5-56.5Q647-240 680-240t56.5 23.5Q760-193 760-160t-23.5 56.5Q713-80 680-80t-56.5-23.5ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z" /></svg></span>
+                <span class="sidebar_text">Robot vásárlás</span>
+            </a>
+            <a class="sidebar_item" href="/Games/PackageList?id=@gameId">
+                <span class="sidebar_icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="M440-183v-274L200-596v274l240 139Zm80 0 240-139v-274L520-457v274Zm-80 92L160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11Zm200-528 77-44-237-137-78 45 238 136Zm-160 93 78-45-237-137-78 45 237 137Z" /></svg></span>
+                <span class="sidebar_text">Csomagok</span>
+            </a>
+            <a class="sidebar_item" href="#settings">
+                <span class="sidebar_icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e3e3e3"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg></span>
+                <span class="sidebar_text">Beállítások</span>
+            </a>
+        </div>
+    }
+
+    <div class="main_wrapper @(showSidebar ? "" : "full-width")">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
