@@ -7,5 +7,7 @@
         public bool Status { get; set; }
         public int MaintenanceFee { get; set; }
 
+        public int? WareHouseId { get; set; }
+        public virtual WareHouse? WareHouse { get; set; }
     }
 }
