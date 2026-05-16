@@ -1,0 +1,30 @@
+@model Robot_Simulation.Models.ShopCardViewModel
+
+<div class="shop-card">
+    <div class="shop-card-image">
+        <img src="/images/@Model.Img" alt="@Model.Name">
+    </div>
+    <div class="shop-card-body">
+        <div class="shop-card-price">ÁR:<span>@Model.Price $</span></div>
+        <ul class="shop-card-stats">
+            @foreach (var stat in Model.Stats)
+            {
+                <li>@stat</li>
+            }
+        </ul>
+    </div>
+    <div class="shop-card-owned">
+        Birtokolva: <span class="shop-card-owned-count">@Model.OwnedCount db</span>
+    </div>
+    <div class="shop-card-footer">
+        <span class="shop-card-name">@Model.Name</span>
+        @if (!string.IsNullOrEmpty(Model.RobotType))
+        {
+            <button class="shop-card-buy-btn"
+                    data-robot-name="@Model.Name"
+                    data-robot-type="@Model.RobotType"
+                    data-game-id="@Model.GameId"
+                    onclick="buyRobot(this)">VÁSÁRLÁS</button>
+        }
+    </div>
+</div>

@@ -1,0 +1,193 @@
+<style>
+    .shop-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        padding: 20px 0;
+    }
+
+    .shop-card {
+        width: 300px;
+        background: linear-gradient(145deg, #1e2a3a, #253545);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .shop-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .shop-card-image {
+        width: 100%;
+        height: 180px;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shop-card-image::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 50%, rgba(30, 42, 58, 0.85) 100%);
+        z-index: 1;
+    }
+
+    .shop-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .shop-card-body {
+        padding: 18px 20px;
+    }
+
+    .shop-card-price {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ecf0f1;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .shop-card-price span {
+        color: #f39c12;
+    }
+
+    .shop-card-stats {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 8px 0;
+    }
+
+    .shop-card-stats li {
+        color: #b0bec5;
+        font-size: 13px;
+        padding: 3px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .shop-card-stats li::before {
+        content: '-';
+        color: #7f8c8d;
+        font-weight: bold;
+    }
+
+    .shop-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(0, 0, 0, 0.15);
+    }
+
+    .shop-card-name {
+        color: #ecf0f1;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .shop-card-buy-btn {
+        padding: 8px 22px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+    }
+
+    .shop-card-buy-btn:hover {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        transform: scale(1.04);
+        box-shadow: 0 2px 12px rgba(46, 204, 113, 0.3);
+    }
+
+    .shop-card-buy-btn:active {
+        transform: scale(0.97);
+    }
+
+    .shop-card-owned {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #b0bec5;
+        font-size: 13px;
+        padding: 8px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .shop-card-owned-count {
+        color: #2ecc71;
+        font-weight: 700;
+        font-size: 15px;
+    }
+</style>
+
+<script>
+    async function buyRobot(button) {
+        const robotName = button.getAttribute('data-robot-name');
+        const robotType = button.getAttribute('data-robot-type');
+        const gameId = button.getAttribute('data-game-id');
+
+        button.disabled = true;
+        button.textContent = '...';
+
+        try {
+            let url = '/Games/BuyRobot';
+            let requestBody = `gameId=${gameId}&robotType=${encodeURIComponent(robotType)}&robotName=${encodeURIComponent(robotName)}`;
+
+            if (robotType === 'Upgrade') {
+                url = '/Games/BuyUpgrade';
+                requestBody = `gameId=${gameId}&upgradeName=${encodeURIComponent(robotName)}`;
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: requestBody
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const card = button.closest('.shop-card');
+                const countSpan = card.querySelector('.shop-card-owned-count');
+                if (countSpan) {
+                    const currentCount = parseInt(countSpan.textContent) || 0;
+                    countSpan.textContent = (currentCount + 1) + ' db';
+                }
+
+                button.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+                setTimeout(() => {
+                    button.textContent = 'VÁSÁRLÁS';
+                    button.style.background = '';
+                    button.disabled = false;
+                }, 800);
+            } else {
+                alert(result.message);
+                button.disabled = false;
+                button.textContent = 'VÁSÁRLÁS';
+            }
+        } catch (error) {
+            alert('Hiba történt a vásárlás során.');
+            button.disabled = false;
+            button.textContent = 'VÁSÁRLÁS';
+        }
+    }
+</script>
