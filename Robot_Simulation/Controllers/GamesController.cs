@@ -27,7 +27,7 @@ namespace Robot_Simulation.Controllers
             return View(game);
         }
 
-        public async Task<IActionResult> RobotShop(int? id)
+        public async Task<IActionResult> PackingShop(int? id)
         {
             if (id == null)
             {
@@ -44,6 +44,38 @@ namespace Robot_Simulation.Controllers
         }
 
         public async Task<IActionResult> PackageList(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            return View(game);
+        }
+
+        public async Task<IActionResult> Upgrades(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            return View(game);
+        }
+
+        public async Task<IActionResult> ChargingShop(int? id)
         {
             if (id == null)
             {
