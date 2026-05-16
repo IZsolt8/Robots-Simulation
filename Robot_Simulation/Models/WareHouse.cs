@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Robot_Simulation.Models
 {
@@ -10,6 +11,19 @@ namespace Robot_Simulation.Models
 
         public int MaitananceFee { get; set; } = 0;
 
+        [NotMapped]
+        public string Name { get; set; } = string.Empty;
+
+        [NotMapped]
+        public int Size { get; set; }
+
+        [NotMapped]
+        public int Price { get; set; }
+
+        [NotMapped]
+        public string Img { get; set; } = string.Empty;
+
         public virtual ICollection<Robot> Robots { get; set; } = new List<Robot>();
+        public virtual ICollection<WarehouseUpgradePurchase> UpgradesPurchased { get; set; } = new List<WarehouseUpgradePurchase>();
     }
 }
