@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -102,6 +102,16 @@
         {
             int.TryParse(queryId.ToString(), out gameId);
         }
+    }
+
+    @if (controller == "Games")
+    {
+        <style>
+            body {
+                background-color: #2c3e50;
+                color: #b0bec5;
+            }
+        </style>
     }
 
     @if (showSidebar)
