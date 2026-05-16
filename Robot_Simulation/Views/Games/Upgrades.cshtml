@@ -5,3 +5,18 @@
 }
 
 @await Html.PartialAsync("_ShopMenu", Model)
+@await Html.PartialAsync("_ShopCardStyles")
+
+@{
+    var warehouseUpgrades = ViewBag.WarehouseUpgrades as List<Robot_Simulation.Models.ShopCardViewModel>;
+}
+
+<div class="shop-cards-container" id="upgrade-shop-cards">
+    @if (warehouseUpgrades != null)
+    {
+        @foreach (var upgrade in warehouseUpgrades)
+        {
+            @await Html.PartialAsync("_ShopCard", upgrade)
+        }
+    }
+</div>
