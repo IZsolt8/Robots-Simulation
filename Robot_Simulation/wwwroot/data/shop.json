@@ -1,0 +1,56 @@
+{
+  "Warehouse shop": [
+    {
+      "Name": "small upgrade",
+      "Size": 10,
+      "Price": 100,
+      "Img": "upgrade_1.png"
+    },
+    {
+      "Name": "medium upgrade",
+      "Size": 20,
+      "Price": 2000,
+      "Img": "upgrade_1.png"
+    },
+    {
+      "Name": "large upgrade",
+      "Size": 30,
+      "Price": 10000,
+      "Img": "upgrade_1.png"
+    }
+  ],
+  "PackingRobot": [
+    {
+      "Name": "teszt 1",
+      "MaintenanceFee": 5,
+      "BatterySize": 10,
+      "PackingSpeed": 1,
+      "Price": 100,
+      "Img": "teszt_1.jpg"
+    },
+    {
+      "Name": "teszt 2",
+      "MaintenanceFee": 10,
+      "BatterySize": 10,
+      "PackingSpeed": 1,
+      "Price": 1200,
+      "Img": "teszt_1.jpg"
+    }
+  ],
+  "ChargingRobot": [
+    {
+      "Name": "charger 1",
+      "MaintenanceFee": 5,
+      "ChargingSpeed": 1,
+      "Price": 100,
+      "Img": "charger_1.png"
+    },
+    {
+      "Name": "charger 2",
+      "MaintenanceFee": 10,
+      "ChargingSpeed": 1.8,
+      "Price": 1200,
+      "Img": "charger_1.png"
+    }
+  ]
+}

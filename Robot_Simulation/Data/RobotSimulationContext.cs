@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Robot_Simulation.Models;
 
 namespace Robot_Simulation.Data
@@ -12,6 +12,7 @@ namespace Robot_Simulation.Data
         public DbSet<Game> Games { get; set; } = null!;
         public DbSet<WareHouse> WareHouses { get; set; } = null!;
         public DbSet<Robot> Robots { get; set; } = null!;
+        public DbSet<WarehouseUpgradePurchase> WarehouseUpgradePurchases { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
