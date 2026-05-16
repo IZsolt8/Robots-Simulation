@@ -1,8 +1,42 @@
 @model Robot_Simulation.Models.Game
 
 @{
-    ViewData["Title"] = "Töltő robotok bolt";
+    ViewData["Title"] = "Töltő robotok";
 }
 
 @await Html.PartialAsync("_ShopMenu", Model)
+@await Html.PartialAsync("_ShopCardStyles")
 
+@{
+    var chargingRobots = ViewBag.ChargingRobots as List<Robot_Simulation.Models.ChargingRobot>;
+    var ownedCounts = ViewBag.OwnedCounts as Dictionary<string, int>;
+}
+
+<div class="shop-cards-container" id="charging-shop-cards">
+    @if (chargingRobots != null)
+    {
+        @foreach (var robot in chargingRobots)
+        {
+            var ownedCount = 0;
+            if (ownedCounts != null && ownedCounts.ContainsKey(robot.Name))
+            {
+                ownedCount = ownedCounts[robot.Name];
+            }
+
+            @await Html.PartialAsync("_ShopCard", new Robot_Simulation.Models.ShopCardViewModel
+            {
+                Name = robot.Name,
+                Price = robot.Price,
+                Img = robot.Img,
+                OwnedCount = ownedCount,
+                RobotType = "ChargingRobot",
+                GameId = Model.ID,
+                Stats = new List<string>
+                {
+                    $"Karbantartási díj: {robot.MaintenanceFee} $ / nap",
+                    $"Töltési sebesség: {robot.ChargingSpeed}"
+                }
+            })
+        }
+    }
+</div>
