@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Robot_Simulation.Data;
 
@@ -10,9 +11,11 @@ using Robot_Simulation.Data;
 namespace Robot_Simulation.Migrations
 {
     [DbContext(typeof(RobotSimulationContext))]
-    partial class RobotSimulationContextModelSnapshot : ModelSnapshot
+    [Migration("20260517171129_AddPackages")]
+    partial class AddPackages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +62,6 @@ namespace Robot_Simulation.Migrations
 
                     b.Property<float>("BatteryCost")
                         .HasColumnType("real");
-
-                    b.Property<int>("CreatedOnDay")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

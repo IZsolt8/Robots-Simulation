@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Robot_Simulation.Data;
 
@@ -10,9 +11,11 @@ using Robot_Simulation.Data;
 namespace Robot_Simulation.Migrations
 {
     [DbContext(typeof(RobotSimulationContext))]
-    partial class RobotSimulationContextModelSnapshot : ModelSnapshot
+    [Migration("20260517152059_AddCurrentDay")]
+    partial class AddCurrentDay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,47 +50,6 @@ namespace Robot_Simulation.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("Robot_Simulation.Models.Packages", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<float>("BatteryCost")
-                        .HasColumnType("real");
-
-                    b.Property<int>("CreatedOnDay")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("StorageTime")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WareHouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("WareHouseId");
-
-                    b.ToTable("Packages");
                 });
 
             modelBuilder.Entity("Robot_Simulation.Models.Robot", b =>
@@ -205,17 +167,6 @@ namespace Robot_Simulation.Migrations
                     b.Navigation("WareHouse");
                 });
 
-            modelBuilder.Entity("Robot_Simulation.Models.Packages", b =>
-                {
-                    b.HasOne("Robot_Simulation.Models.WareHouse", "WareHouse")
-                        .WithMany("Packages")
-                        .HasForeignKey("WareHouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WareHouse");
-                });
-
             modelBuilder.Entity("Robot_Simulation.Models.Robot", b =>
                 {
                     b.HasOne("Robot_Simulation.Models.WareHouse", "WareHouse")
@@ -238,8 +189,6 @@ namespace Robot_Simulation.Migrations
 
             modelBuilder.Entity("Robot_Simulation.Models.WareHouse", b =>
                 {
-                    b.Navigation("Packages");
-
                     b.Navigation("Robots");
 
                     b.Navigation("UpgradesPurchased");

@@ -7,9 +7,15 @@ namespace Robot_Simulation.Models
     {
         public int ID { get; set; }
 
-        public int StorgarSize { get; set; } = 10; 
+        public int StorgarSize { get; set; } = 10;
 
         public int MaitananceFee { get; set; } = 0;
+
+        [NotMapped]
+        public int UsedSpace => Packages?.Count(p => !p.Status) ?? 0;
+
+        [NotMapped]
+        public int FreeSpace => Math.Max(0, StorgarSize - UsedSpace);
 
         [NotMapped]
         public string Name { get; set; } = string.Empty;
@@ -25,6 +31,7 @@ namespace Robot_Simulation.Models
 
         public virtual ICollection<Robot> Robots { get; set; } = new List<Robot>();
         public virtual ICollection<WarehouseUpgrade> UpgradesPurchased { get; set; } = new List<WarehouseUpgrade>();
+        public virtual ICollection<Packages> Packages { get; set; } = new List<Packages>();
 
         public Dictionary<string, int> GetOwnedRobotCounts()
         {

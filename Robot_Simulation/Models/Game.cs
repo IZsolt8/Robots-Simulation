@@ -18,6 +18,13 @@ namespace Robot_Simulation.Models
         [ForeignKey("WarehouseId")]
         public virtual WareHouse? WareHouse { get; set; }
 
+        public int CurrentDay { get; set; } = 0;
+
+        public void NextDay()
+        {
+            CurrentDay++;
+        }
+
         public bool CanAfford(int price)
         {
             return Balance >= price;

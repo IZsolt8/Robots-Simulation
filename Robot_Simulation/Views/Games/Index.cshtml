@@ -1,7 +1,9 @@
-﻿@model Robot_Simulation.Models.Game
+@model Robot_Simulation.Models.Game
+@using Robot_Simulation.Models
 
 @{
     ViewData["Title"] = "Raktár";
+    var todaysPackages = ViewBag.TodaysPackages as List<Packages> ?? new List<Packages>();
 }
 
 <div>
@@ -29,6 +31,67 @@
             <dd class="col-sm-9">
                 @Model.WareHouse.StorgarSize
             </dd>
+            <dt class="col-sm-3">
+                <strong>Foglalt hely:</strong>
+            </dt>
+            <dd class="col-sm-9">
+                @Model.WareHouse.UsedSpace
+            </dd>
+            <dt class="col-sm-3">
+                <strong>Szabad hely:</strong>
+            </dt>
+            <dd class="col-sm-9">
+                @Model.WareHouse.FreeSpace
+            </dd>
+            <dt class="col-sm-3">
+                <strong>Jelenlegi nap:</strong>
+            </dt>
+            <dd class="col-sm-9">
+                @Model.CurrentDay
+            </dd>
         </dl>
     </div>
-</div>
+
+    <div class="mt-3">
+        <form asp-action="NextDay" method="post">
+            <input type="hidden" name="gameId" value="@Model.ID" />
+            <button type="submit" class="btn btn-primary">Következő nap</button>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <h4>@Model.CurrentDay. nap – beérkező csomagok</h4>
+        @if (!todaysPackages.Any())
+        {
+            <p>Ezen a napon nem érkezett új csomag (a raktár tele van, vagy ez az első nap).</p>
+        }
+        else
+        {
+            <table border="1" cellpadding="4" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Név</th>
+                        <th>Típus</th>
+                        <th>Ár ($)</th>
+                        <th>Tárolási idő (nap)</th>
+                        <th>Ütegköltség</th>
+                        <th>Állapot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pkg in todaysPackages)
+                    {
+                        <tr>
+                            <td>@pkg.Name</td>
+                            <td>@pkg.Type</td>
+                            <td>@pkg.Price</td>
+                            <td>@pkg.StorageTime</td>
+                            <td>@pkg.BatteryCost</td>
+                            <td>@(pkg.Status ? "Kész" : "Várakozik")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

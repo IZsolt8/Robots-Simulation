@@ -1,0 +1,282 @@
+[
+    {
+        "type": "romlandó",
+        "name": "Friss élelmiszer csomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Műszaki cikkek és elektronikai alkatrészek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Faipari alapanyagok és fűrészáru"
+    },
+    {
+        "type": "romlandó",
+        "name": "Tejtermék és hústermék válogatás"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Barkács és faipari szerszámok"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Konyhai kisgépek"
+    },
+    {
+        "type": "romlandó",
+        "name": "Friss érett gyümölcs kosár"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Számítástechnikai perifériák és egerek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Gyalult tölgyfa deszka csomag"
+    },
+    {
+        "type": "romlandó",
+        "name": "Prémium hidegtál válogatás"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Akkumulátoros fúrógép és szerszámkészlet"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Nyír rétegelt lemez szállítmány"
+    },
+    {
+        "type": "romlandó",
+        "name": "Kézműves cukrászsütemény csomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Okostelefon tartozékok és védőtokok"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Laminált bútorlap és élzáró készlet"
+    },
+    {
+        "type": "romlandó",
+        "name": "Vákuumcsomagolt friss húsáru"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Hálózati kábelek és csatlakozók"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Szárított fenyő fűrészáru"
+    },
+    {
+        "type": "romlandó",
+        "name": "Vegyes zöldséges láda"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Autóelektronikai mérőműszerek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Fa tiplik, csapok és facsavarok"
+    },
+    {
+        "type": "romlandó",
+        "name": "Érlelt sajtválogatás és tejtermékek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Ipari LED világítástechnikai szett"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Előre gyártott tetőszerkezeti gerendák"
+    },
+    {
+        "type": "romlandó",
+        "name": "Friss tenger gyümölcsei mix"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Digitális forrasztóállomás tartozékokkal"
+    },
+    {
+        "type": "romlandó",
+        "name": "Konyhakész salátakeverékek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Fa felületkezelő olajok és csiszolóvásznak"
+    },
+    {
+        "type": "romlandó",
+        "name": "Friss pékáru és kovászos kenyér válogatás"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Házimozi erősítő és hangfalszett"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Kezeletlen bükkfa rönk csomag"
+    },
+    {
+        "type": "romlandó",
+        "name": "Füstölt kolbász és sonka csomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Vezeték nélküli router és switch"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "MDF lapok és bútoripari hátfalak"
+    },
+    {
+        "type": "romlandó",
+        "name": "Frissen préselt gyümölcslevek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Okosotthon kaputelefon és kamerarendszer"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Lambéria és faborítás készlet"
+    },
+    {
+        "type": "romlandó",
+        "name": "Cukrászati tejszín és vaj szállítmány"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Laboratóriumi tápegység és multiméter"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Gyalult akácfa kerítésléc csomag"
+    },
+    {
+        "type": "romlandó",
+        "name": "Konyhakész erdei gomba keverék"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Autós fedélzeti kamerák és GPS navigáció"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "D3/D4 vízálló faipari enyvek és ragasztók"
+    },
+    {
+        "type": "romlandó",
+        "name": "Friss fűszernövény válogatás"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Szünetmentes tápegység (UPS) szerverekhez"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Diófa furnérlemez és díszlécek"
+    },
+    {
+        "type": "romlandó",
+        "name": "Mentes sütemény és kézműves desszert csomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Lézeres távolságmérő és szintező műszer"
+    },
+    {
+        "type": "romlandó",
+        "name": "Előrecsomagolt prémium szendvicsek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Kézi körfűrész és asztali gyalugép alkatrészek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Ipari csavarhúzó készlet és bitfejek"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Rétegelt fenyő bútorlapok"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Digitális multiméter és feszültségkereső"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Keményfa parketta mintacsomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "LED szalag szett tápegységgel és vezérlővel"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Faipari ragasztó és tipli válogatás"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Okos konnektor és otthonautomatizálási központ"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Csiszolópapír és polírozó korong készlet"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Biztonsági kamera rögzítő egység (DVR)"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Élhajlított fém rögzítőelemek fa szerkezetekhez"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Vezeték nélküli fülhallgató és töltőtok"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Fafestékek, lazúrok és alapozók"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Számítógépes alaplap és processzor hűtő"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Bükkfa léc és díszítőprofil csomag"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Hordozható külső merevlemez (SSD)"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Pneumatikus szögbelövő gép"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Laboratóriumi forrasztóhuzal és folyasztószer"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "OSB lapok és építőipari faanyagok"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Ujjlenyomatos okos ajtózár"
+    },
+    {
+        "type": "nem romlandó",
+        "name": "Kézi gyalu és fanyelű vésőkészlet"
+    }
+]

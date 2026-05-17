@@ -24,11 +24,17 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
                 return NotFound();
             }
+
+            var todaysPackages = game.WareHouse?.Packages
+                .Where(p => p.CreatedOnDay == game.CurrentDay)
+                .ToList() ?? new List<Models.Packages>();
+            ViewBag.TodaysPackages = todaysPackages;
             return View(game);
         }
 
@@ -194,6 +200,30 @@ namespace Robot_Simulation.Controllers
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, balance = game.Balance, newSize = game.WareHouse.StorgarSize });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NextDay(int gameId)
+        {
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .FirstOrDefaultAsync(m => m.ID == gameId);
+
+            if (game == null || game.WareHouse == null)
+            {
+                return NotFound();
+            }
+
+            game.NextDay();
+
+            var packageJsonPath = Path.Combine(_env.WebRootPath, "data", "Package.json");
+            var newPackages = Models.Packages.GenerateForWarehouse(game.WareHouse, packageJsonPath, game.CurrentDay);
+            _context.Packages.AddRange(newPackages);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { id = gameId });
         }
     }
 }
