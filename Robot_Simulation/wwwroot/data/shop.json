@@ -1,22 +1,22 @@
 {
   "Warehouse shop": [
     {
-      "Name": "small upgrade",
+      "Name": "Kis bővítés",
       "Size": 10,
       "Price": 100,
       "Img": "upgrade_1.png"
     },
     {
-      "Name": "medium upgrade",
+      "Name": "Közepes bővítés",
       "Size": 20,
       "Price": 2000,
-      "Img": "upgrade_1.png"
+      "Img": "upgrade_2.png"
     },
     {
-      "Name": "large upgrade",
+      "Name": "Nagy bővítés",
       "Size": 30,
       "Price": 10000,
-      "Img": "upgrade_1.png"
+      "Img": "upgrade_3.png"
     }
   ],
   "PackingRobot": [
