@@ -12,7 +12,7 @@ namespace Robot_Simulation.Data
         public DbSet<Game> Games { get; set; } = null!;
         public DbSet<WareHouse> WareHouses { get; set; } = null!;
         public DbSet<Robot> Robots { get; set; } = null!;
-        public DbSet<WarehouseUpgradePurchase> WarehouseUpgradePurchases { get; set; } = null!;
+        public DbSet<WarehouseUpgrade> WarehouseUpgradePurchases { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

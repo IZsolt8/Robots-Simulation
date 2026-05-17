@@ -24,6 +24,6 @@ namespace Robot_Simulation.Models
         public string Img { get; set; } = string.Empty;
 
         public virtual ICollection<Robot> Robots { get; set; } = new List<Robot>();
-        public virtual ICollection<WarehouseUpgradePurchase> UpgradesPurchased { get; set; } = new List<WarehouseUpgradePurchase>();
+        public virtual ICollection<WarehouseUpgrade> UpgradesPurchased { get; set; } = new List<WarehouseUpgrade>();
     }
 }

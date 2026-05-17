@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Robot_Simulation.Data;
 
@@ -10,9 +11,11 @@ using Robot_Simulation.Data;
 namespace Robot_Simulation.Migrations
 {
     [DbContext(typeof(RobotSimulationContext))]
-    partial class RobotSimulationContextModelSnapshot : ModelSnapshot
+    [Migration("20260517142423_RenameWarehouseUpgrade")]
+    partial class RenameWarehouseUpgrade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

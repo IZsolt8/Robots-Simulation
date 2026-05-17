@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Robot_Simulation.Models
 {
-    public class WarehouseUpgradePurchase
+    public class WarehouseUpgrade
     {
         [Key]
         public int ID { get; set; }
