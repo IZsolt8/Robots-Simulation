@@ -18,6 +18,12 @@ namespace Robot_Simulation.Models
         public int FreeSpace => Math.Max(0, StorgarSize - UsedSpace);
 
         [NotMapped]
+        public IEnumerable<Packages> PackagesWaitingForPacking => Packages?.Where(p => !p.Status) ?? Enumerable.Empty<Packages>();
+
+        [NotMapped]
+        public IEnumerable<Packages> PackedPackages => Packages?.Where(p => p.Status) ?? Enumerable.Empty<Packages>();
+
+        [NotMapped]
         public string Name { get; set; } = string.Empty;
 
         [NotMapped]

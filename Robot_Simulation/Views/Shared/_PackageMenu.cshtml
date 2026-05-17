@@ -1,0 +1,12 @@
+@model Robot_Simulation.Models.Game
+
+<partial name="_MenuStyles" />
+
+<div class="shop-menu">
+    <a href="/Games/WaitingPackages?id=@Model.ID" class="shop-menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "WaitingPackages" ? "active" : "")">
+        Pakolásra váró
+    </a>
+    <a href="/Games/PackedPackages?id=@Model.ID" class="shop-menu-item @(ViewContext.RouteData.Values["action"]?.ToString() == "PackedPackages" ? "active" : "")">
+        Elpakolt
+    </a>
+</div>
