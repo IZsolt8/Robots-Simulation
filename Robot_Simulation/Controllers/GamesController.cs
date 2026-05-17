@@ -47,27 +47,16 @@ namespace Robot_Simulation.Controllers
                 return NotFound();
             }
 
-            var jsonPath = Path.Combine(_env.WebRootPath, "data", "shop.json");
-            var jsonString = await System.IO.File.ReadAllTextAsync(jsonPath);
-            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
-            var packingRobotElement = doc.RootElement.GetProperty("PackingRobot");
-            var packingRobots = System.Text.Json.JsonSerializer.Deserialize<List<Robot_Simulation.Models.PackingRobot>>(packingRobotElement.GetRawText())
-                ?? new List<Robot_Simulation.Models.PackingRobot>();
+            ViewBag.PackingRobots = await _shopService.GetPackingRobotsAsync();
 
-            ViewBag.PackingRobots = packingRobots;
-
-            var ownedCounts = new Dictionary<string, int>();
-            if (game.WareHouse?.Robots != null)
+            if (game.WareHouse != null)
             {
-                foreach (var robot in game.WareHouse.Robots)
-                {
-                    if (ownedCounts.ContainsKey(robot.Name))
-                        ownedCounts[robot.Name]++;
-                    else
-                        ownedCounts[robot.Name] = 1;
-                }
+                ViewBag.OwnedCounts = game.WareHouse.GetOwnedRobotCounts();
             }
-            ViewBag.OwnedCounts = ownedCounts;
+            else
+            {
+                ViewBag.OwnedCounts = new Dictionary<string, int>();
+            }
 
             return View(game);
         }
@@ -103,31 +92,7 @@ namespace Robot_Simulation.Controllers
                 return NotFound();
             }
 
-            var jsonPath = Path.Combine(_env.WebRootPath, "data", "shop.json");
-            var jsonString = await System.IO.File.ReadAllTextAsync(jsonPath);
-            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
-            var warehouseCards = new List<Robot_Simulation.Models.ShopCardViewModel>();
-            foreach (var item in doc.RootElement.GetProperty("Warehouse shop").EnumerateArray())
-            {
-                var upgradeName = item.GetProperty("Name").GetString() ?? "";
-                var ownedCount = game.WareHouse?.UpgradesPurchased.FirstOrDefault(u => u.UpgradeName == upgradeName)?.Quantity ?? 0;
-
-                warehouseCards.Add(new Robot_Simulation.Models.ShopCardViewModel
-                {
-                    Name = upgradeName,
-                    Price = item.GetProperty("Price").GetInt32(),
-                    Img = item.GetProperty("Img").GetString() ?? "",
-                    OwnedCount = ownedCount,
-                    RobotType = "Upgrade",
-                    GameId = game.ID,
-                    Stats = new List<string>
-                    {
-                        $"Raktárméret bővítés: +{item.GetProperty("Size").GetInt32()}"
-                    }
-                });
-            }
-
-            ViewBag.WarehouseUpgrades = warehouseCards;
+            ViewBag.WarehouseUpgrades = await _shopService.GetWarehouseUpgradesAsync(game.WareHouse, game.ID);
 
             return View(game);
         }
@@ -147,27 +112,16 @@ namespace Robot_Simulation.Controllers
                 return NotFound();
             }
 
-            var jsonPath = Path.Combine(_env.WebRootPath, "data", "shop.json");
-            var jsonString = await System.IO.File.ReadAllTextAsync(jsonPath);
-            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
-            var chargingElement = doc.RootElement.GetProperty("ChargingRobot");
-            var chargingRobots = System.Text.Json.JsonSerializer.Deserialize<List<Robot_Simulation.Models.ChargingRobot>>(chargingElement.GetRawText())
-                ?? new List<Robot_Simulation.Models.ChargingRobot>();
+            ViewBag.ChargingRobots = await _shopService.GetChargingRobotsAsync();
 
-            ViewBag.ChargingRobots = chargingRobots;
-
-            var ownedCounts = new Dictionary<string, int>();
-            if (game.WareHouse?.Robots != null)
+            if (game.WareHouse != null)
             {
-                foreach (var robot in game.WareHouse.Robots)
-                {
-                    if (ownedCounts.ContainsKey(robot.Name))
-                        ownedCounts[robot.Name]++;
-                    else
-                        ownedCounts[robot.Name] = 1;
-                }
+                ViewBag.OwnedCounts = game.WareHouse.GetOwnedRobotCounts();
             }
-            ViewBag.OwnedCounts = ownedCounts;
+            else
+            {
+                ViewBag.OwnedCounts = new Dictionary<string, int>();
+            }
 
             return View(game);
         }
@@ -199,33 +153,8 @@ namespace Robot_Simulation.Controllers
             }
 
             game.DeductBalance(price);
+            game.WareHouse.AddRobotFromShop(robotType, robotName, foundRobot.Value);
 
-            Robot_Simulation.Models.Robot newRobot;
-            if (robotType == "PackingRobot")
-            {
-                newRobot = new Robot_Simulation.Models.PackingRobot
-                {
-                    Name = robotName,
-                    MaintenanceFee = foundRobot.Value.GetProperty("MaintenanceFee").GetInt32(),
-                    PackingSpeed = foundRobot.Value.GetProperty("PackingSpeed").GetInt32(),
-                    BatteryLevel = foundRobot.Value.GetProperty("BatterySize").GetInt32(),
-                    Status = true,
-                    WareHouseId = game.WarehouseId
-                };
-            }
-            else
-            {
-                newRobot = new Robot_Simulation.Models.ChargingRobot
-                {
-                    Name = robotName,
-                    MaintenanceFee = foundRobot.Value.GetProperty("MaintenanceFee").GetInt32(),
-                    ChargingSpeed = (float)foundRobot.Value.GetProperty("ChargingSpeed").GetDouble(),
-                    Status = true,
-                    WareHouseId = game.WarehouseId
-                };
-            }
-
-            _context.Robots.Add(newRobot);
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, balance = game.Balance });
@@ -260,21 +189,7 @@ namespace Robot_Simulation.Controllers
             }
 
             game.DeductBalance(price);
-            game.WareHouse.StorgarSize += size;
-
-            var existingPurchase = game.WareHouse.UpgradesPurchased.FirstOrDefault(u => u.UpgradeName == upgradeName);
-            if (existingPurchase != null)
-            {
-                existingPurchase.Quantity += 1;
-            }
-            else
-            {
-                game.WareHouse.UpgradesPurchased.Add(new Robot_Simulation.Models.WarehouseUpgrade
-                {
-                    UpgradeName = upgradeName,
-                    Quantity = 1
-                });
-            }
+            game.WareHouse.AddUpgrade(upgradeName, size);
 
             await _context.SaveChangesAsync();
 
