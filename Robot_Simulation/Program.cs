@@ -14,6 +14,7 @@ namespace Robot_Simulation
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<Robot_Simulation.Services.ShopService>();
 
             var app = builder.Build();
 

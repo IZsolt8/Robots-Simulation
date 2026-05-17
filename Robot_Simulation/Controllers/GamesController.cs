@@ -8,10 +8,13 @@ namespace Robot_Simulation.Controllers
     {
         private readonly RobotSimulationContext _context;
         private readonly IWebHostEnvironment _env;
-        public GamesController(RobotSimulationContext context, IWebHostEnvironment env)
+        private readonly Robot_Simulation.Services.ShopService _shopService;
+
+        public GamesController(RobotSimulationContext context, IWebHostEnvironment env, Robot_Simulation.Services.ShopService shopService)
         {
             _context = context;
             _env = env;
+            _shopService = shopService;
         }
         public async Task<IActionResult> Index(int? id)
         {
@@ -181,19 +184,7 @@ namespace Robot_Simulation.Controllers
                 return Json(new { success = false, message = "A játék nem található." });
             }
 
-            var jsonPath = Path.Combine(_env.WebRootPath, "data", "shop.json");
-            var jsonString = await System.IO.File.ReadAllTextAsync(jsonPath);
-            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
-
-            System.Text.Json.JsonElement? foundRobot = null;
-            foreach (var item in doc.RootElement.GetProperty(robotType).EnumerateArray())
-            {
-                if (item.GetProperty("Name").GetString() == robotName)
-                {
-                    foundRobot = item;
-                    break;
-                }
-            }
+            var foundRobot = await _shopService.GetItemDetailsAsync(robotType, robotName);
 
             if (foundRobot == null)
             {
@@ -202,12 +193,12 @@ namespace Robot_Simulation.Controllers
 
             var price = foundRobot.Value.GetProperty("Price").GetInt32();
 
-            if (game.Balance < price)
+            if (!game.CanAfford(price))
             {
                 return Json(new { success = false, message = "Nincs elegendő egyenlege" });
             }
 
-            game.Balance -= price;
+            game.DeductBalance(price);
 
             Robot_Simulation.Models.Robot newRobot;
             if (robotType == "PackingRobot")
@@ -253,19 +244,7 @@ namespace Robot_Simulation.Controllers
                 return Json(new { success = false, message = "A játék nem található." });
             }
 
-            var jsonPath = Path.Combine(_env.WebRootPath, "data", "shop.json");
-            var jsonString = await System.IO.File.ReadAllTextAsync(jsonPath);
-            using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
-
-            System.Text.Json.JsonElement? foundUpgrade = null;
-            foreach (var item in doc.RootElement.GetProperty("Warehouse shop").EnumerateArray())
-            {
-                if (item.GetProperty("Name").GetString() == upgradeName)
-                {
-                    foundUpgrade = item;
-                    break;
-                }
-            }
+            var foundUpgrade = await _shopService.GetItemDetailsAsync("Warehouse shop", upgradeName);
 
             if (foundUpgrade == null)
             {
@@ -275,12 +254,12 @@ namespace Robot_Simulation.Controllers
             var price = foundUpgrade.Value.GetProperty("Price").GetInt32();
             var size = foundUpgrade.Value.GetProperty("Size").GetInt32();
 
-            if (game.Balance < price)
+            if (!game.CanAfford(price))
             {
                 return Json(new { success = false, message = "Nincs elegendő egyenleged" });
             }
 
-            game.Balance -= price;
+            game.DeductBalance(price);
             game.WareHouse.StorgarSize += size;
 
             var existingPurchase = game.WareHouse.UpgradesPurchased.FirstOrDefault(u => u.UpgradeName == upgradeName);
@@ -290,7 +269,7 @@ namespace Robot_Simulation.Controllers
             }
             else
             {
-                game.WareHouse.UpgradesPurchased.Add(new Robot_Simulation.Models.WarehouseUpgradePurchase
+                game.WareHouse.UpgradesPurchased.Add(new Robot_Simulation.Models.WarehouseUpgrade
                 {
                     UpgradeName = upgradeName,
                     Quantity = 1

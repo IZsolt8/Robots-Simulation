@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Robot_Simulation.Models
@@ -17,5 +17,19 @@ namespace Robot_Simulation.Models
 
         [ForeignKey("WarehouseId")]
         public virtual WareHouse? WareHouse { get; set; }
+
+        public bool CanAfford(int price)
+        {
+            return Balance >= price;
+        }
+
+        public void DeductBalance(int price)
+        {
+            if (!CanAfford(price))
+            {
+                throw new InvalidOperationException("Nincs elegendő egyenleg!");
+            }
+            Balance -= price;
+        }
     }
 }
