@@ -112,7 +112,7 @@ namespace Robot_Simulation.Models
             var packingRobots = Robots.OfType<PackingRobot>().ToList();
             var packagesToPack = Packages
                 .Where(p => p.Status == false)
-                .OrderBy(p => p.CreatedOnDay) // Régebbi csomagok előre (pl. 11. napi a 12. előtt)
+                .OrderBy(p => p.CreatedOnDay)
                 .ToList();
 
             foreach (var robot in packingRobots)

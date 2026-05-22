@@ -28,10 +28,6 @@ namespace Robot_Simulation.Models
                     pkg.PackedOnDay = currentDay;
                     packedToday++;
                 }
-                else if (this.BatteryLevel > 0)
-                {
-                    pkg.IsUnderPacking = true;
-                }
             }
         }
     }
