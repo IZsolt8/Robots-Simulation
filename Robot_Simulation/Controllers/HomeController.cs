@@ -72,14 +72,23 @@ namespace Robots_Simulation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var game = await _context.Games.FindAsync(id);
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
+                .FirstOrDefaultAsync(m => m.ID == id);
 
             if (game != null)
             {
-                var warehouse = await _context.WareHouses.FindAsync(game.WarehouseId);
-                if (warehouse != null)
+                if (game.WareHouse != null)
                 {
-                    _context.WareHouses.Remove(warehouse);
+                    _context.Robots.RemoveRange(game.WareHouse.Robots);
+                    _context.Packages.RemoveRange(game.WareHouse.Packages);
+                    _context.WarehouseUpgradePurchases.RemoveRange(game.WareHouse.UpgradesPurchased);
+                    _context.WareHouses.Remove(game.WareHouse);
                 }
 
                 _context.Games.Remove(game);
