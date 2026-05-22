@@ -2,8 +2,46 @@
 
 @{
     ViewData["Title"] = "Elpakolt csomagok";
+    var packedPackages = Model.WareHouse?.Packages?.Where(p => p.Status == true && p.IsDelivered == false).ToList() ?? new List<Robot_Simulation.Models.Packages>();
 }
 
 <partial name="_PackageMenu" model="Model" />
+@await Html.PartialAsync("_ShopCardStyles")
 
-<h2>Elpakolt csomagok</h2>
+<div class="shop-cards-container" id="packed-packages-cards">
+    @if (packedPackages.Any())
+    {
+        foreach (var pkg in packedPackages)
+        {
+            var imageSrc = pkg.Type.ToLower() == "romlandó" ? "romlando_csomag.png" : "csomag.png";
+            
+            <div class="shop-card">
+                <div class="shop-card-image">
+                    <img src="/images/@imageSrc" alt="@pkg.Name">
+                </div>
+                <div class="shop-card-name-bar">
+                    <span class="shop-card-name">@pkg.Name</span>
+                </div>
+                <div class="shop-card-body">
+                    <div class="shop-card-price">ÁR: <span>@pkg.Price Ft</span></div>
+                    <ul class="shop-card-stats">
+                        @{
+                            var typeClass = pkg.Type.ToLower() == "romlandó" ? "type-perishable" : "type-non-perishable";
+                            var daysSincePacked = Model.CurrentDay - (pkg.PackedOnDay ?? pkg.CreatedOnDay);
+                        }
+                        <li>Típus: <span class="shop-card-type @typeClass">@pkg.Type</span></li>
+                        <li>Tárolási idő: @pkg.StorageTime nap</li>
+                        <li>Akkumulátor költség: @pkg.BatteryCost</li>
+                        <li>Raktárban töltött idő (elpakolás óta): @daysSincePacked nap</li>
+                    </ul>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">Jelenleg nincsenek elpakolt csomagok.</div>
+        </div>
+    }
+</div>

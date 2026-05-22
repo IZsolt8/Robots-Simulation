@@ -44,6 +44,27 @@
                 @Model.WareHouse.FreeSpace
             </dd>
             <dt class="col-sm-3">
+                <strong>Pakoló robotok akku kapacitása:</strong>
+            </dt>
+            <dd class="col-sm-9">
+                @if (Model.WareHouse?.Robots != null && Model.WareHouse.Robots.OfType<Robot_Simulation.Models.PackingRobot>().Any())
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var group in Model.WareHouse.Robots.OfType<Robot_Simulation.Models.PackingRobot>().GroupBy(r => r.Name))
+                        {
+                            <li>
+                                <strong>@group.Key</strong> (@group.Count() db): 
+                                @string.Join(", ", group.Select(r => $"{r.BatteryLevel}")) egység
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span>Nincs pakoló robot.</span>
+                }
+            </dd>
+            <dt class="col-sm-3">
                 <strong>Jelenlegi nap:</strong>
             </dt>
             <dd class="col-sm-9">
@@ -94,4 +115,4 @@
             </table>
         }
     </div>
-</div>
+</div>

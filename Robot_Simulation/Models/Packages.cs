@@ -18,14 +18,29 @@ namespace Robot_Simulation.Models
 
         public bool Status { get; set; } = false;
 
+        public bool IsUnderPacking { get; set; } = false;
+
+        public bool IsDelivered { get; set; } = false;
+
         public float BatteryCost { get; set; }
 
         public int WareHouseId { get; set; }
 
         public int CreatedOnDay { get; set; } = 0;
 
+        public int? PackedOnDay { get; set; }
+
         [ForeignKey("WareHouseId")]
         public virtual WareHouse? WareHouse { get; set; }
+
+        public bool IsReadyForDelivery(int currentDay)
+        {
+            if (!Status) return false;
+            if (IsDelivered) return false;
+            
+            int daysSincePacked = currentDay - (PackedOnDay ?? CreatedOnDay);
+            return daysSincePacked >= StorageTime;
+        }
 
         public static List<Packages> GenerateForWarehouse(WareHouse wareHouse, string packageJsonPath, int currentDay)
         {

@@ -9,5 +9,30 @@ namespace Robot_Simulation.Models
 
         [NotMapped]
         public int BatterySize { get; set; }
+
+        public void PackPackages(List<Packages> packagesToPack, int currentDay)
+        {
+            int maxPackagesPerDay = this.PackingSpeed * 24;
+            int packedToday = 0;
+
+            foreach (var pkg in packagesToPack)
+            {
+                if (pkg.Status) continue;
+                if (packedToday >= maxPackagesPerDay) break;
+
+                if (this.BatteryLevel >= pkg.BatteryCost)
+                {
+                    this.BatteryLevel -= pkg.BatteryCost;
+                    pkg.Status = true;
+                    pkg.IsUnderPacking = false;
+                    pkg.PackedOnDay = currentDay;
+                    packedToday++;
+                }
+                else if (this.BatteryLevel > 0)
+                {
+                    pkg.IsUnderPacking = true;
+                }
+            }
+        }
     }
 }

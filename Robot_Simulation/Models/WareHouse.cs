@@ -12,16 +12,16 @@ namespace Robot_Simulation.Models
         public int MaitananceFee { get; set; } = 0;
 
         [NotMapped]
-        public int UsedSpace => Packages?.Count(p => !p.Status) ?? 0;
+        public int UsedSpace => Packages?.Count(p => !p.IsDelivered) ?? 0;
 
         [NotMapped]
         public int FreeSpace => Math.Max(0, StorgarSize - UsedSpace);
 
         [NotMapped]
-        public IEnumerable<Packages> PackagesWaitingForPacking => Packages?.Where(p => !p.Status) ?? Enumerable.Empty<Packages>();
+        public IEnumerable<Packages> PackagesWaitingForPacking => Packages?.Where(p => !p.Status && !p.IsDelivered) ?? Enumerable.Empty<Packages>();
 
         [NotMapped]
-        public IEnumerable<Packages> PackedPackages => Packages?.Where(p => p.Status) ?? Enumerable.Empty<Packages>();
+        public IEnumerable<Packages> PackedPackages => Packages?.Where(p => p.Status && !p.IsDelivered) ?? Enumerable.Empty<Packages>();
 
         [NotMapped]
         public string Name { get; set; } = string.Empty;
@@ -105,6 +105,20 @@ namespace Robot_Simulation.Models
 
             Robots.Add(newRobot);
             return newRobot;
+        }
+
+        public void ProcessDailyPacking(int currentDay)
+        {
+            var packingRobots = Robots.OfType<PackingRobot>().ToList();
+            var packagesToPack = Packages
+                .Where(p => p.Status == false)
+                .OrderBy(p => p.CreatedOnDay) // Régebbi csomagok előre (pl. 11. napi a 12. előtt)
+                .ToList();
+
+            foreach (var robot in packingRobots)
+            {
+                robot.PackPackages(packagesToPack, currentDay);
+            }
         }
     }
 }

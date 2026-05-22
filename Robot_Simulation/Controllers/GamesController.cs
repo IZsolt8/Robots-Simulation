@@ -25,6 +25,8 @@ namespace Robot_Simulation.Controllers
             var game = await _context.Games
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -92,6 +94,7 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
+                .ThenInclude(w => w.Packages)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -225,12 +228,20 @@ namespace Robot_Simulation.Controllers
             var game = await _context.Games
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == gameId);
 
             if (game == null || game.WareHouse == null)
             {
                 return NotFound();
             }
+
+            // Robotok pakolása saját osztályukban implementálva
+            game.WareHouse.ProcessDailyPacking(game.CurrentDay);
+
+            // Elpakolt csomagok eladása, ha lejárt a tárolási idejük
+            game.ProcessDeliveries();
 
             game.NextDay();
 

@@ -20,6 +20,21 @@ namespace Robot_Simulation.Models
 
         public int CurrentDay { get; set; } = 0;
 
+        public void ProcessDeliveries()
+        {
+            if (WareHouse == null || WareHouse.Packages == null) return;
+
+            var readyPackages = WareHouse.Packages
+                .Where(p => p.IsReadyForDelivery(CurrentDay))
+                .ToList();
+
+            foreach (var pkg in readyPackages)
+            {
+                Balance += pkg.Price;
+                pkg.IsDelivered = true;
+            }
+        }
+
         public void NextDay()
         {
             CurrentDay++;
