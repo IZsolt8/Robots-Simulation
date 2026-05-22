@@ -75,6 +75,7 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
+                .ThenInclude(w => w.Packages)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {

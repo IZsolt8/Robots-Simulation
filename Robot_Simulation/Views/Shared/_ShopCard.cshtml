@@ -4,8 +4,11 @@
     <div class="shop-card-image">
         <img src="/images/@Model.Img" alt="@Model.Name">
     </div>
+    <div class="shop-card-name-bar" style="background: rgba(0, 0, 0, 0.15); padding: 12px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+        <span class="shop-card-name" style="font-size: 16px; font-weight: 600; color: #ecf0f1;">@Model.Name</span>
+    </div>
     <div class="shop-card-body">
-        <div class="shop-card-price">ÁR:<span>@Model.Price $</span></div>
+        <div class="shop-card-price">ÁR: <span>@Model.Price $</span></div>
         <ul class="shop-card-stats">
             @foreach (var stat in Model.Stats)
             {
@@ -16,8 +19,7 @@
     <div class="shop-card-owned">
         Birtokolva: <span class="shop-card-owned-count">@Model.OwnedCount db</span>
     </div>
-    <div class="shop-card-footer">
-        <span class="shop-card-name">@Model.Name</span>
+    <div class="shop-card-footer" style="justify-content: center;">
         @if (!string.IsNullOrEmpty(Model.RobotType))
         {
             <button class="shop-card-buy-btn"
