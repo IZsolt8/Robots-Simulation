@@ -34,7 +34,8 @@
                 Stats = new List<string>
                 {
                     $"Karbantartási díj: {robot.MaintenanceFee} $ / nap",
-                    $"Töltési sebesség: {robot.ChargingSpeed}"
+                    $"Töltési sebesség: {robot.ChargingSpeed}",
+                    $"Egyszerre tölthető robotok száma: {robot.MaxChargingCapacity}"
                 }
             })
         }

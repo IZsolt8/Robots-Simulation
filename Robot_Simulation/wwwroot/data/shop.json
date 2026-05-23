@@ -22,7 +22,7 @@
   "PackingRobot": [
     {
       "Name": "teszt 1",
-      "MaintenanceFee": 5,
+      "MaintenanceFee": 500,
       "BatterySize": 10,
       "PackingSpeed": 1,
       "Price": 100,
@@ -30,7 +30,7 @@
     },
     {
       "Name": "teszt 2",
-      "MaintenanceFee": 10,
+      "MaintenanceFee": 1000,
       "BatterySize": 10,
       "PackingSpeed": 1,
       "Price": 1200,
@@ -40,15 +40,17 @@
   "ChargingRobot": [
     {
       "Name": "charger 1",
-      "MaintenanceFee": 5,
-      "ChargingSpeed": 1,
+      "MaintenanceFee": 500,
+      "ChargingSpeed": 0.2,
+      "MaxChargingCapacity": 1,
       "Price": 100,
       "Img": "charger_1.png"
     },
     {
       "Name": "charger 2",
-      "MaintenanceFee": 10,
-      "ChargingSpeed": 1.8,
+      "MaintenanceFee": 1000,
+      "ChargingSpeed": 0.8,
+      "MaxChargingCapacity": 5,
       "Price": 1200,
       "Img": "charger_1.png"
     }
