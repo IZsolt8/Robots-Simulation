@@ -65,6 +65,18 @@
                 }
             </dd>
             <dt class="col-sm-3">
+                <strong>Napi karbantartási díjak:</strong>
+            </dt>
+            <dd class="col-sm-9">
+                @{
+                    int robotFee = Model.WareHouse?.Robots?.Sum(r => r.MaintenanceFee) ?? 0;
+                    int warehouseFee = (int)((Model.WareHouse?.StorgarSize ?? 0) * 0.3 * 200);
+                    int totalFee = robotFee + warehouseFee;
+                }
+                @totalFee $ / nap <br />
+                Raktár: @warehouseFee $ / nap, Robotok: @robotFee $ / nap
+            </dd>
+            <dt class="col-sm-3">
                 <strong>Jelenlegi nap:</strong>
             </dt>
             <dd class="col-sm-9">

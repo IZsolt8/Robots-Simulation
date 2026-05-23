@@ -38,6 +38,12 @@ namespace Robot_Simulation.Models
         public void NextDay()
         {
             CurrentDay++;
+            if (WareHouse != null)
+            {
+                int warehouseFee = (int)(WareHouse.StorgarSize * 0.3 * 200);
+                int robotFee = WareHouse.Robots?.Sum(r => r.MaintenanceFee) ?? 0;
+                Balance -= (warehouseFee + robotFee);
+            }
         }
 
         public bool CanAfford(int price)
