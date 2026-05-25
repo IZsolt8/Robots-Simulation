@@ -6,7 +6,16 @@
 
 <style>
     .header {
+        background-color: #192045;
+        color: #ecf0f1;
+        padding: 20px;
         text-align: center;
+        margin: -20px -20px 30px -20px;
+    }
+    
+    .header h1 {
+        margin: 0;
+        font-size: 24px;
     }
 
     .create_container {
@@ -24,17 +33,47 @@
         margin-bottom: 30px;
     }
 
+    .form-control {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        border: 1px solid #34495e;
+    }
+
+    .form-control:focus {
+        background-color: #1a252f;
+        color: #ecf0f1;
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+    }
+
     .buttons {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .custom-btn {
+        padding: 10px 25px;
+        font-size: 16px;
+        background-color: #192045;
+        color: #ecf0f1;
+        border: 2px solid transparent;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .custom-btn:hover {
+        background-color: #1A1D26;
+        color: #fff;
+        transform: translateY(-2px);
     }
 </style>
 
 <div class="header">
     <h1>Játék Létrehozása</h1>
 </div>
-<hr />
 
 <div class="create_container">
     <div class="input_buttons_container">
@@ -46,8 +85,8 @@
                 <span asp-validation-for="GameName" class="text-danger"></span>
             </div>
             <div class="buttons">
-                <a asp-action="Index" class="btn btn-secondary">Vissza</a>
-                <input type="submit" value="Létrehozás" class="btn btn-primary" />
+                <a asp-action="Index" class="custom-btn">Vissza</a>
+                <input type="submit" value="Létrehozás" class="custom-btn" />
             </div>
         </form>
     </div>
