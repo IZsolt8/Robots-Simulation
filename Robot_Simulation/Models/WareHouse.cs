@@ -18,6 +18,15 @@ namespace Robot_Simulation.Models
         public int FreeSpace => Math.Max(0, StorgarSize - UsedSpace);
 
         [NotMapped]
+        public int RobotMaintenanceFee => Robots?.Sum(r => r.MaintenanceFee) ?? 0;
+
+        [NotMapped]
+        public int WarehouseMaintenanceFee => (int)(StorgarSize * 0.3 * 200);
+
+        [NotMapped]
+        public int TotalMaintenanceFee => RobotMaintenanceFee + WarehouseMaintenanceFee;
+
+        [NotMapped]
         public IEnumerable<Packages> PackagesWaitingForPacking => Packages?.Where(p => !p.Status && !p.IsDelivered) ?? Enumerable.Empty<Packages>();
 
         [NotMapped]

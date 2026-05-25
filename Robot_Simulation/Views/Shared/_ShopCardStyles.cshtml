@@ -193,6 +193,16 @@
             const result = await response.json();
 
             if (result.success) {
+                const topBarBalance = document.getElementById('topBarBalance');
+                const topBarMaintenanceFee = document.getElementById('topBarMaintenanceFee');
+                
+                if (topBarBalance) {
+                    topBarBalance.textContent = result.balance + ' $';
+                }
+                if (topBarMaintenanceFee && result.maintenanceFee !== undefined) {
+                    topBarMaintenanceFee.textContent = result.maintenanceFee + ' $';
+                }
+
                 const card = button.closest('.shop-card');
                 const countSpan = card.querySelector('.shop-card-owned-count');
                 if (countSpan) {

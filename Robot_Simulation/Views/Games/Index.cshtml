@@ -6,7 +6,7 @@
     var todaysPackages = ViewBag.TodaysPackages as List<Packages> ?? new List<Packages>();
 }
 
-<div>
+<div class="index-content-wrapper">
     <div>Raktár</div>
 
     <div>
@@ -44,73 +44,128 @@
                 <strong>Napi karbantartási díjak:</strong>
             </dt>
             <dd class="col-sm-9">
-                @{
-                    int robotFee = Model.WareHouse?.Robots?.Sum(r => r.MaintenanceFee) ?? 0;
-                    int warehouseFee = (int)((Model.WareHouse?.StorgarSize ?? 0) * 0.3 * 200);
-                    int totalFee = robotFee + warehouseFee;
-                }
-                @totalFee $ / nap <br />
-                Raktár: @warehouseFee $ / nap, Robotok: @robotFee $ / nap
-            </dd>
-            <dt class="col-sm-3">
-                <strong>Jelenlegi idő:</strong>
-            </dt>
-            <dd class="col-sm-9">
-                @Model.CurrentDay. nap - <span id="currentHourDisplay">@Model.CurrentHour.ToString("00"):00</span>
+                @Model.WareHouse.TotalMaintenanceFee $ / nap <br />
+                Raktár: @Model.WareHouse.WarehouseMaintenanceFee $ / nap, Robotok: @Model.WareHouse.RobotMaintenanceFee $ / nap
             </dd>
         </dl>
     </div>
 
-    <div class="mt-3">
-        <form asp-action="NextDay" method="post" id="nextDayForm" class="d-inline-block">
+    <div class="mt-3" style="display: none;">
+        <form asp-action="NextDay" method="post" id="nextDayForm">
             <input type="hidden" name="gameId" value="@Model.ID" />
             <input type="hidden" name="remainingHours" id="remainingHoursInput" value="@(24 - Model.CurrentHour)" />
-            <button type="submit" class="btn btn-primary">Következő nap</button>
         </form>
-        <form asp-action="NextHour" method="post" id="nextHourForm" class="d-none">
+        <form asp-action="NextHour" method="post" id="nextHourForm">
             <input type="hidden" name="gameId" value="@Model.ID" />
         </form>
-        <button id="autoDayBtn" class="btn btn-info ms-2">Auto Day: Ki</button>
     </div>
 
+@section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var autoDayBtn = document.getElementById("autoDayBtn");
             var nextDayForm = document.getElementById("nextDayForm");
             var nextHourForm = document.getElementById("nextHourForm");
-            var currentHourDisplay = document.getElementById("currentHourDisplay");
             var remainingHoursInput = document.getElementById("remainingHoursInput");
             
             var isAutoDay = sessionStorage.getItem("autoDay_@Model.ID") === "true";
-            var hour = @Model.CurrentHour;
             var timerId = null;
 
             function updateBtnState() {
                 if (isAutoDay) {
-                    autoDayBtn.innerText = "Auto Day: Be (Kikapcsolás)";
-                    autoDayBtn.classList.remove("btn-info");
-                    autoDayBtn.classList.add("btn-warning");
+                    autoDayBtn.innerText = "Játék leállítása";
+                    autoDayBtn.className = "custom-btn-stop";
                 } else {
-                    autoDayBtn.innerText = "Auto Day: Ki (Bekapcsolás)";
-                    autoDayBtn.classList.remove("btn-warning");
-                    autoDayBtn.classList.add("btn-info");
+                    autoDayBtn.innerText = "Játék indítása";
+                    autoDayBtn.className = "custom-btn-start";
                 }
             }
 
             updateBtnState();
 
-            function tickHour() {
-                if (hour >= 23) {
-                    remainingHoursInput.value = 1;
-                    nextDayForm.submit();
-                } else {
-                    nextHourForm.submit();
+            async function tickHour() {
+                if (sessionStorage.getItem("autoDay_@Model.ID") !== "true") {
+                    stopTimer();
+                    return;
+                }
+
+                // Re-query elements every time to avoid stale references
+                const timeEl = document.getElementById("currentHourDisplay");
+                const hour = parseInt(timeEl?.innerText || "0");
+                const isNextDay = hour >= 23;
+                
+                const formId = isNextDay ? "nextDayForm" : "nextHourForm";
+                const form = document.getElementById(formId);
+                
+                if (!form) {
+                    console.error("Form nem található: " + formId);
+                    stopTimer();
+                    return;
+                }
+
+                if (isNextDay) {
+                    const remInput = document.getElementById("remainingHoursInput");
+                    if (remInput) remInput.value = 1;
+                }
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Use a timestamp to bypass browser cache and get the latest data
+                        const cacheBuster = "_=" + new Date().getTime();
+                        const url = window.location.href + (window.location.href.includes('?') ? '&' : '?') + cacheBuster;
+                        
+                        const refreshResponse = await fetch(url);
+                        const html = await refreshResponse.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Update Top Bar
+                        const topBarIds = ['topBarBalance', 'topBarMaintenanceFee', 'topBarUsedSpace', 'topBarFreeSpace'];
+                        topBarIds.forEach(id => {
+                            const oldEl = document.getElementById(id);
+                            const newEl = doc.getElementById(id);
+                            if (oldEl && newEl) oldEl.innerHTML = newEl.innerHTML;
+                        });
+
+                        // Update Main Content
+                        const oldContent = document.querySelector('.index-content-wrapper');
+                        const newContent = doc.querySelector('.index-content-wrapper');
+                        if (oldContent && newContent) {
+                            oldContent.innerHTML = newContent.innerHTML;
+                        }
+
+                        // Update Time Display in bottom bar
+                        const oldTime = document.getElementById('currentHourDisplay');
+                        const newTime = doc.getElementById('currentHourDisplay');
+                        if (oldTime && newTime) {
+                            oldTime.innerHTML = newTime.innerHTML;
+                        }
+
+                        // Continue timer if still auto-playing
+                        if (sessionStorage.getItem("autoDay_@Model.ID") === "true") {
+                            startTimer();
+                        }
+                    } else {
+                        // If response is not ok (e.g. server error), stop and let user know
+                        console.error("Szerver hiba történt.");
+                        stopTimer();
+                    }
+                } catch (error) {
+                    console.error("Hiba az idő telése során:", error);
+                    stopTimer();
                 }
             }
 
             function startTimer() {
                 if (timerId !== null) return;
                 timerId = setTimeout(function () {
+                    timerId = null;
                     if (sessionStorage.getItem("autoDay_@Model.ID") === "true") {
                         tickHour();
                     }
@@ -141,6 +196,7 @@
             }
         });
     </script>
+}
 
     <div class="mt-4">
         <h4>@Model.CurrentDay. nap – beérkező csomagok</h4>
@@ -177,4 +233,76 @@
             </table>
         }
     </div>
+</div>
+
+<style>
+    .bottom_bar {
+        position: fixed;
+        bottom: 0;
+        left: 200px;
+        width: calc(100% - 200px);
+        background-color: #192045;
+        color: #ecf0f1;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 30px;
+        font-size: 15px;
+        border-top: 1px solid #2c3e50;
+        z-index: 1000;
+    }
+
+    .custom-btn-start {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #2ecc71;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .custom-btn-start:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+    }
+
+    .custom-btn-stop {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .custom-btn-stop:hover {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+    }
+    
+    .index-content-wrapper {
+        padding-bottom: 80px; /* Space for the fixed bottom bar */
+    }
+</style>
+
+<div class="bottom_bar">
+    <div>Jelenlegi idő: @Model.CurrentDay. nap - <span id="currentHourDisplay">@Model.CurrentHour.ToString("00"):00</span></div>
+    <button id="autoDayBtn"></button>
+    <script>
+        (function() {
+            var btn = document.getElementById("autoDayBtn");
+            if (sessionStorage.getItem("autoDay_@Model.ID") === "true") {
+                btn.innerText = "Játék leállítása";
+                btn.className = "custom-btn-stop";
+            } else {
+                btn.innerText = "Játék indítása";
+                btn.className = "custom-btn-start";
+            }
+        })();
+    </script>
 </div>

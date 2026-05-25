@@ -169,10 +169,11 @@
         @if (showSidebar && Model is Robot_Simulation.Models.Game game)
         {
             <div class="top_bar">
-                <div class="top_bar_item">Egyenleg: <span class="top_bar_value_green">@game.Balance $</span></div>
+                <div class="top_bar_item">Egyenleg: <span id="topBarBalance" class="top_bar_value_green">@game.Balance $</span></div>
+                <div class="top_bar_item">Karbantartási díj: <span id="topBarMaintenanceFee" class="top_bar_value_red">@game.WareHouse.TotalMaintenanceFee $</span></div>
                 <div class="top_bar_item">Raktár mérete: @game.WareHouse.StorgarSize</div>
-                <div class="top_bar_item">foglalt hely: <span class="top_bar_value_red">@game.WareHouse.UsedSpace</span></div>
-                <div class="top_bar_item">szabad hely: <span class="top_bar_value_green">@game.WareHouse.FreeSpace</span></div>
+                <div class="top_bar_item">foglalt hely: <span id="topBarUsedSpace" class="top_bar_value_red">@game.WareHouse.UsedSpace</span></div>
+                <div class="top_bar_item">szabad hely: <span id="topBarFreeSpace" class="top_bar_value_green">@game.WareHouse.FreeSpace</span></div>
             </div>
         }
         <div class="container">

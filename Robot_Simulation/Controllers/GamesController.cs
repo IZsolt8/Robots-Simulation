@@ -79,7 +79,9 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
-                .ThenInclude(w => w.Packages)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -96,7 +98,9 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
-                .ThenInclude(w => w.Packages)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -116,6 +120,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.UpgradesPurchased)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -192,7 +198,7 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance });
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee });
         }
 
         [HttpPost]
@@ -203,6 +209,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.UpgradesPurchased)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == gameId);
 
             if (game == null || game.WareHouse == null)
@@ -230,7 +238,7 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, newSize = game.WareHouse.StorgarSize });
+            return Json(new { success = true, balance = game.Balance, newSize = game.WareHouse.StorgarSize, maintenanceFee = game.WareHouse.TotalMaintenanceFee });
         }
 
         [HttpPost]
