@@ -198,7 +198,7 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee });
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
         }
 
         [HttpPost]
@@ -238,7 +238,7 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, newSize = game.WareHouse.StorgarSize, maintenanceFee = game.WareHouse.TotalMaintenanceFee });
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
         }
 
         [HttpPost]

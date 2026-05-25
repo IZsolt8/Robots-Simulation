@@ -165,13 +165,203 @@
         </div>
     }
 
+    @if (showSidebar && Model is Robot_Simulation.Models.Game gameForBar)
+    {
+        <style>
+            .bottom_bar {
+                position: fixed;
+                bottom: 0;
+                left: 200px;
+                width: calc(100% - 200px);
+                background-color: #192045;
+                color: #ecf0f1;
+                padding: 15px 20px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                gap: 30px;
+                font-size: 15px;
+                border-top: 1px solid #2c3e50;
+                z-index: 1000;
+            }
+            .custom-btn-start {
+                padding: 8px 20px;
+                font-size: 16px;
+                background-color: #2ecc71;
+                color: #fff;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .custom-btn-start:hover {
+                background-color: #27ae60;
+                transform: translateY(-2px);
+            }
+            .custom-btn-stop {
+                padding: 8px 20px;
+                font-size: 16px;
+                background-color: #e74c3c;
+                color: #fff;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .custom-btn-stop:hover {
+                background-color: #c0392b;
+                transform: translateY(-2px);
+            }
+        </style>
+
+        <div style="display:none;">
+            <form asp-controller="Games" asp-action="NextDay" method="post" id="nextDayForm">
+                <input type="hidden" name="gameId" value="@gameForBar.ID" />
+                <input type="hidden" name="remainingHours" id="remainingHoursInput" value="1" />
+            </form>
+            <form asp-controller="Games" asp-action="NextHour" method="post" id="nextHourForm">
+                <input type="hidden" name="gameId" value="@gameForBar.ID" />
+            </form>
+        </div>
+
+        <div class="bottom_bar">
+            <div>Jelenlegi idő: <span id="currentDayDisplay">@gameForBar.CurrentDay</span>. nap &ndash; <span id="currentHourDisplay">@gameForBar.CurrentHour.ToString("00")</span>:00</div>
+            <button id="autoDayBtn"></button>
+        </div>
+
+        <script>
+            (function () {
+                var GAME_ID = @gameForBar.ID;
+                var AUTO_KEY = "autoDay_" + GAME_ID;
+                var LAST_TICK_KEY = "lastTick_" + GAME_ID;
+                var TICK_INTERVAL = 2000;
+                var INDEX_URL = "/Games/Index?id=" + GAME_ID;
+
+                var timerId = null;
+
+                var btn = document.getElementById("autoDayBtn");
+
+                function updateBtnState() {
+                    if (sessionStorage.getItem(AUTO_KEY) === "true") {
+                        btn.innerText = "Játék leállítása";
+                        btn.className = "custom-btn-stop";
+                    } else {
+                        btn.innerText = "Játék indítása";
+                        btn.className = "custom-btn-start";
+                    }
+                }
+
+                updateBtnState();
+
+                async function tickHour() {
+                    if (sessionStorage.getItem(AUTO_KEY) !== "true") {
+                        stopTimer();
+                        return;
+                    }
+
+                    localStorage.setItem(LAST_TICK_KEY, Date.now().toString());
+
+                    var hourEl = document.getElementById("currentHourDisplay");
+                    var hour = parseInt(hourEl ? hourEl.innerText : "0") || 0;
+                    var isNextDay = hour >= 23;
+
+                    var formId = isNextDay ? "nextDayForm" : "nextHourForm";
+                    var form = document.getElementById(formId);
+                    if (!form) { stopTimer(); return; }
+
+                    if (isNextDay) {
+                        var remInput = document.getElementById("remainingHoursInput");
+                        if (remInput) remInput.value = 1;
+                    }
+
+                    try {
+                        var formData = new FormData(form);
+                        var response = await fetch(form.action, { method: "POST", body: formData });
+
+                        if (response.ok) {
+                            var cacheBuster = "_=" + Date.now();
+                            var refreshUrl = INDEX_URL + "&" + cacheBuster;
+                            var refreshResponse = await fetch(refreshUrl);
+                            var html = await refreshResponse.text();
+                            var parser = new DOMParser();
+                            var doc = parser.parseFromString(html, "text/html");
+
+                            var newHourEl = doc.getElementById("currentHourDisplay");
+                            var newDayEl  = doc.getElementById("currentDayDisplay");
+                            if (hourEl && newHourEl) hourEl.innerText = newHourEl.innerText;
+                            var dayEl = document.getElementById("currentDayDisplay");
+                            if (dayEl && newDayEl) dayEl.innerText = newDayEl.innerText;
+
+                            var topBarIds = ["topBarBalance", "topBarMaintenanceFee", "topBarStorageSize", "topBarUsedSpace", "topBarFreeSpace"];
+                            topBarIds.forEach(function (id) {
+                                var oldEl = document.getElementById(id);
+                                var newEl = doc.getElementById(id);
+                                if (oldEl && newEl) oldEl.innerHTML = newEl.innerHTML;
+                            });
+
+                            var isIndexPage = !!document.querySelector(".index-content-wrapper");
+                            if (isIndexPage) {
+                                var oldContent = document.querySelector(".index-content-wrapper");
+                                var newContent = doc.querySelector(".index-content-wrapper");
+                                if (oldContent && newContent) oldContent.innerHTML = newContent.innerHTML;
+                            }
+
+
+                            if (sessionStorage.getItem(AUTO_KEY) === "true") {
+                                startTimer();
+                            }
+                        } else {
+                            console.error("Szerver hiba.");
+                            stopTimer();
+                        }
+                    } catch (e) {
+                        console.error("Tick hiba:", e);
+                        stopTimer();
+                    }
+                }
+
+                function startTimer() {
+                    if (timerId !== null) return;
+                    timerId = setTimeout(function () {
+                        timerId = null;
+                        if (sessionStorage.getItem(AUTO_KEY) === "true") {
+                            tickHour();
+                        }
+                    }, TICK_INTERVAL);
+                }
+
+                function stopTimer() {
+                    if (timerId !== null) { clearTimeout(timerId); timerId = null; }
+                    localStorage.removeItem(LAST_TICK_KEY);
+                }
+
+                btn.addEventListener("click", function () {
+                    var isOn = sessionStorage.getItem(AUTO_KEY) === "true";
+                    isOn = !isOn;
+                    sessionStorage.setItem(AUTO_KEY, isOn);
+                    updateBtnState();
+                    if (isOn) {
+                        localStorage.setItem(LAST_TICK_KEY, Date.now().toString());
+                        startTimer();
+                    } else {
+                        stopTimer();
+                    }
+                });
+
+                if (sessionStorage.getItem(AUTO_KEY) === "true") {
+                    startTimer();
+                }
+            })();
+        </script>
+    }
+
     <div class="main_wrapper @(showSidebar ? "" : "full-width")">
         @if (showSidebar && Model is Robot_Simulation.Models.Game game)
         {
             <div class="top_bar">
                 <div class="top_bar_item">Egyenleg: <span id="topBarBalance" class="top_bar_value_green">@game.Balance $</span></div>
                 <div class="top_bar_item">Karbantartási díj: <span id="topBarMaintenanceFee" class="top_bar_value_red">@game.WareHouse.TotalMaintenanceFee $</span></div>
-                <div class="top_bar_item">Raktár mérete: @game.WareHouse.StorgarSize</div>
+                <div class="top_bar_item">Raktár mérete: <span id="topBarStorageSize">@game.WareHouse.StorgarSize</span></div>
                 <div class="top_bar_item">foglalt hely: <span id="topBarUsedSpace" class="top_bar_value_red">@game.WareHouse.UsedSpace</span></div>
                 <div class="top_bar_item">szabad hely: <span id="topBarFreeSpace" class="top_bar_value_green">@game.WareHouse.FreeSpace</span></div>
             </div>

@@ -195,13 +195,15 @@
             if (result.success) {
                 const topBarBalance = document.getElementById('topBarBalance');
                 const topBarMaintenanceFee = document.getElementById('topBarMaintenanceFee');
-                
-                if (topBarBalance) {
-                    topBarBalance.textContent = result.balance + ' $';
-                }
-                if (topBarMaintenanceFee && result.maintenanceFee !== undefined) {
-                    topBarMaintenanceFee.textContent = result.maintenanceFee + ' $';
-                }
+                const topBarStorageSize = document.getElementById('topBarStorageSize');
+                const topBarUsedSpace = document.getElementById('topBarUsedSpace');
+                const topBarFreeSpace = document.getElementById('topBarFreeSpace');
+
+                if (topBarBalance) topBarBalance.textContent = result.balance + ' $';
+                if (topBarMaintenanceFee && result.maintenanceFee !== undefined) topBarMaintenanceFee.textContent = result.maintenanceFee + ' $';
+                if (topBarStorageSize && result.storageSize !== undefined) topBarStorageSize.textContent = result.storageSize;
+                if (topBarUsedSpace && result.usedSpace !== undefined) topBarUsedSpace.textContent = result.usedSpace;
+                if (topBarFreeSpace && result.freeSpace !== undefined) topBarFreeSpace.textContent = result.freeSpace;
 
                 const card = button.closest('.shop-card');
                 const countSpan = card.querySelector('.shop-card-owned-count');
