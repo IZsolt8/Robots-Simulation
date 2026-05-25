@@ -223,7 +223,7 @@ namespace Robot_Simulation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NextDay(int gameId)
+        public async Task<IActionResult> NextDay(int gameId, int remainingHours = 24)
         {
             var game = await _context.Games
                 .Include(g => g.WareHouse)
@@ -238,7 +238,7 @@ namespace Robot_Simulation.Controllers
             }
 
             // Robotok pakolása saját osztályukban implementálva
-            game.WareHouse.ProcessDailyPacking(game.CurrentDay);
+            game.WareHouse.ProcessDailyPacking(game.CurrentDay, remainingHours);
 
             // Elpakolt csomagok eladása, ha lejárt a tárolási idejük
             game.ProcessDeliveries();
@@ -249,6 +249,29 @@ namespace Robot_Simulation.Controllers
             var newPackages = Models.Packages.GenerateForWarehouse(game.WareHouse, packageJsonPath, game.CurrentDay);
             _context.Packages.AddRange(newPackages);
 
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { id = gameId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NextHour(int gameId)
+        {
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
+                .FirstOrDefaultAsync(m => m.ID == gameId);
+
+            if (game == null || game.WareHouse == null)
+            {
+                return NotFound();
+            }
+
+            game.WareHouse.ProcessHourlyPacking(game.CurrentDay);
+            game.CurrentHour++;
+            
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { id = gameId });

@@ -77,20 +77,94 @@
                 Raktár: @warehouseFee $ / nap, Robotok: @robotFee $ / nap
             </dd>
             <dt class="col-sm-3">
-                <strong>Jelenlegi nap:</strong>
+                <strong>Jelenlegi idő:</strong>
             </dt>
             <dd class="col-sm-9">
-                @Model.CurrentDay
+                @Model.CurrentDay. nap - <span id="currentHourDisplay">@Model.CurrentHour.ToString("00"):00</span>
             </dd>
         </dl>
     </div>
 
     <div class="mt-3">
-        <form asp-action="NextDay" method="post">
+        <form asp-action="NextDay" method="post" id="nextDayForm" class="d-inline-block">
             <input type="hidden" name="gameId" value="@Model.ID" />
+            <input type="hidden" name="remainingHours" id="remainingHoursInput" value="@(24 - Model.CurrentHour)" />
             <button type="submit" class="btn btn-primary">Következő nap</button>
         </form>
+        <form asp-action="NextHour" method="post" id="nextHourForm" class="d-none">
+            <input type="hidden" name="gameId" value="@Model.ID" />
+        </form>
+        <button id="autoDayBtn" class="btn btn-info ms-2">Auto Day: Ki</button>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var autoDayBtn = document.getElementById("autoDayBtn");
+            var nextDayForm = document.getElementById("nextDayForm");
+            var nextHourForm = document.getElementById("nextHourForm");
+            var currentHourDisplay = document.getElementById("currentHourDisplay");
+            var remainingHoursInput = document.getElementById("remainingHoursInput");
+            
+            var isAutoDay = sessionStorage.getItem("autoDay_@Model.ID") === "true";
+            var hour = @Model.CurrentHour;
+            var timerId = null;
+
+            function updateBtnState() {
+                if (isAutoDay) {
+                    autoDayBtn.innerText = "Auto Day: Be (Kikapcsolás)";
+                    autoDayBtn.classList.remove("btn-info");
+                    autoDayBtn.classList.add("btn-warning");
+                } else {
+                    autoDayBtn.innerText = "Auto Day: Ki (Bekapcsolás)";
+                    autoDayBtn.classList.remove("btn-warning");
+                    autoDayBtn.classList.add("btn-info");
+                }
+            }
+
+            updateBtnState();
+
+            function tickHour() {
+                if (hour >= 23) {
+                    remainingHoursInput.value = 1;
+                    nextDayForm.submit();
+                } else {
+                    nextHourForm.submit();
+                }
+            }
+
+            function startTimer() {
+                if (timerId !== null) return;
+                timerId = setTimeout(function () {
+                    if (sessionStorage.getItem("autoDay_@Model.ID") === "true") {
+                        tickHour();
+                    }
+                }, 2000);
+            }
+
+            function stopTimer() {
+                if (timerId !== null) {
+                    clearTimeout(timerId);
+                    timerId = null;
+                }
+            }
+
+            autoDayBtn.addEventListener("click", function () {
+                isAutoDay = !isAutoDay;
+                sessionStorage.setItem("autoDay_@Model.ID", isAutoDay);
+                updateBtnState();
+                
+                if (isAutoDay) {
+                    startTimer();
+                } else {
+                    stopTimer();
+                }
+            });
+
+            if (isAutoDay) {
+                startTimer();
+            }
+        });
+    </script>
 
     <div class="mt-4">
         <h4>@Model.CurrentDay. nap – beérkező csomagok</h4>

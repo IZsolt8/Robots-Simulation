@@ -109,7 +109,15 @@ namespace Robot_Simulation.Models
             return newRobot;
         }
 
-        public void ProcessDailyPacking(int currentDay)
+        public void ProcessDailyPacking(int currentDay, int hoursToProcess = 24)
+        {
+            for (int hour = 0; hour < hoursToProcess; hour++)
+            {
+                ProcessHourlyPacking(currentDay);
+            }
+        }
+
+        public void ProcessHourlyPacking(int currentDay)
         {
             var packingRobots = Robots.OfType<PackingRobot>().ToList();
             var chargingRobots = Robots.OfType<ChargingRobot>().ToList();
@@ -122,73 +130,70 @@ namespace Robot_Simulation.Models
                 .ThenBy(p => p.Type == "nem romlandó" ? p.CreatedOnDay : 0)
                 .ToList();
 
-            for (int hour = 0; hour < 24; hour++)
+            var robotsToCharge = packingRobots.Where(r => r.IsCharging).ToList();
+            if (robotsToCharge.Any())
             {
-                var robotsToCharge = packingRobots.Where(r => r.IsCharging).ToList();
-                if (robotsToCharge.Any())
+                var robotsAssignedThisHour = new HashSet<int>();
+
+                foreach (var chargingRobot in chargingRobots)
                 {
-                    var robotsAssignedThisHour = new HashSet<int>();
+                    var unassignedRobots = robotsToCharge
+                        .Where(r => r.IsCharging && !robotsAssignedThisHour.Contains(r.ID))
+                        .ToList();
 
-                    foreach (var chargingRobot in chargingRobots)
+                    if (!unassignedRobots.Any())
                     {
-                        var unassignedRobots = robotsToCharge
-                            .Where(r => r.IsCharging && !robotsAssignedThisHour.Contains(r.ID))
-                            .ToList();
+                        unassignedRobots = robotsToCharge.Where(r => r.IsCharging).ToList();
+                    }
 
-                        if (!unassignedRobots.Any())
-                        {
-                            unassignedRobots = robotsToCharge.Where(r => r.IsCharging).ToList();
-                        }
+                    int capacity = chargingRobot.MaxChargingCapacity > 0 ? chargingRobot.MaxChargingCapacity : 1;
+                    var actualRobotsToCharge = unassignedRobots.Take(capacity).ToList();
 
-                        int capacity = chargingRobot.MaxChargingCapacity > 0 ? chargingRobot.MaxChargingCapacity : 1;
-                        var actualRobotsToCharge = unassignedRobots.Take(capacity).ToList();
+                    foreach (var r in actualRobotsToCharge)
+                    {
+                        robotsAssignedThisHour.Add(r.ID);
+                    }
 
-                        foreach (var r in actualRobotsToCharge)
-                        {
-                            robotsAssignedThisHour.Add(r.ID);
-                        }
+                    chargingRobot.ChargeRobots(actualRobotsToCharge);
+                }
+            }
 
-                        chargingRobot.ChargeRobots(actualRobotsToCharge);
+            foreach (var robot in packingRobots)
+            {
+                if (robot.IsCharging) continue;
+
+                int maxPackagesThisHour = robot.PackingSpeed;
+                int packedThisHour = 0;
+                bool failedDueToBattery = false;
+
+                for (int i = 0; i < packagesToPack.Count; i++)
+                {
+                    if (packedThisHour >= maxPackagesThisHour) break;
+
+                    var pkg = packagesToPack[i];
+                    if (robot.BatteryLevel >= pkg.BatteryCost)
+                    {
+                        robot.BatteryLevel -= pkg.BatteryCost;
+                        pkg.Status = true;
+                        pkg.IsUnderPacking = false;
+                        pkg.PackedOnDay = currentDay;
+                        
+                        packagesToPack.RemoveAt(i);
+                        i--;
+                        packedThisHour++;
+                    }
+                    else
+                    {
+                        failedDueToBattery = true;
+                        continue;
                     }
                 }
 
-                foreach (var robot in packingRobots)
+                if (!robot.IsCharging && totalChargingSpeed > 0)
                 {
-                    if (robot.IsCharging) continue;
-
-                    int maxPackagesThisHour = robot.PackingSpeed;
-                    int packedThisHour = 0;
-                    bool failedDueToBattery = false;
-
-                    for (int i = 0; i < packagesToPack.Count; i++)
+                    if (robot.BatteryLevel <= 0 || (packedThisHour == 0 && failedDueToBattery))
                     {
-                        if (packedThisHour >= maxPackagesThisHour) break;
-
-                        var pkg = packagesToPack[i];
-                        if (robot.BatteryLevel >= pkg.BatteryCost)
-                        {
-                            robot.BatteryLevel -= pkg.BatteryCost;
-                            pkg.Status = true;
-                            pkg.IsUnderPacking = false;
-                            pkg.PackedOnDay = currentDay;
-                            
-                            packagesToPack.RemoveAt(i);
-                            i--;
-                            packedThisHour++;
-                        }
-                        else
-                        {
-                            failedDueToBattery = true;
-                            continue;
-                        }
-                    }
-
-                    if (!robot.IsCharging && totalChargingSpeed > 0)
-                    {
-                        if (robot.BatteryLevel <= 0 || (packedThisHour == 0 && failedDueToBattery))
-                        {
-                            robot.IsCharging = true;
-                        }
+                        robot.IsCharging = true;
                     }
                 }
             }

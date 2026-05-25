@@ -19,6 +19,7 @@ namespace Robot_Simulation.Models
         public virtual WareHouse? WareHouse { get; set; }
 
         public int CurrentDay { get; set; } = 0;
+        public int CurrentHour { get; set; } = 0;
 
         public void ProcessDeliveries()
         {
@@ -38,6 +39,7 @@ namespace Robot_Simulation.Models
         public void NextDay()
         {
             CurrentDay++;
+            CurrentHour = 0;
             if (WareHouse != null)
             {
                 int warehouseFee = (int)(WareHouse.StorgarSize * 0.3 * 200);
