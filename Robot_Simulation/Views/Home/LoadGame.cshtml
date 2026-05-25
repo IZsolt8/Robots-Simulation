@@ -8,9 +8,23 @@
 }
 
 <style>
-    .title {
+    .header {
+        background-color: #192045;
+        color: #ecf0f1;
+        padding: 20px;
         text-align: center;
-        margin-bottom: 25px;
+        margin: -20px -20px 30px -20px;
+    }
+    
+    .header h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .table_container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
     }
 
     .search_container {
@@ -30,25 +44,60 @@
         flex-grow: 1;
         padding: 12px 15px;
         font-size: 16px;
-        border: 1px solid #ced4da;
-        border-radius: 6px 6px 6px 6px; 
+        border: 1px solid #34495e;
+        border-radius: 6px; 
         outline: none;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+    }
+    
+    .search_style::placeholder {
+        color: #b0bec5;
     }
 
     .search_button {
         padding: 12px 25px;
         font-size: 16px;
-        background-color: #d5d5d5;
-        color: black;
-        border: 1px solid black;
-        border-radius: 6px 6px 6px 6px;
+        background-color: #192045;
+        color: #ecf0f1;
+        border: 2px solid transparent;
+        border-radius: 25px;
         cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-        .search_button:hover {
-            filter: brightness(0.95);
-            color: black
-        }
+    .search_button:hover {
+        background-color: #1A1D26;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .custom-btn {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #192045;
+        color: #ecf0f1;
+        border: 2px solid transparent;
+        border-radius: 25px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .custom-btn:hover {
+        background-color: #1A1D26;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .custom-btn-danger {
+        background-color: #c0392b;
+    }
+    
+    .custom-btn-danger:hover {
+        background-color: #e74c3c;
+    }
 
     .page_selection {
         display : flex;
@@ -61,10 +110,39 @@
         margin-bottom: 0;
     }
 
+    .pagination .page-link {
+        background-color: #2c3e50;
+        border-color: #34495e;
+        color: #ecf0f1;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #3498db;
+        color: #fff;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #192045;
+        border-color: #192045;
+        color: #fff;
+    }
+
+    .table-wrapper {
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #34495e;
+    }
+
+    .table-wrapper .table {
+        margin-bottom: 0;
+    }
 </style>
 
+<div class="header">
+    <h1>Játék betöltése</h1>
+</div>
 
-<h1 class="title">Játék betöltése</h1>
+<div class="table_container">
 
 <form asp-action="LoadGame" method="get" class="search_container">
     <div class="search_group">
@@ -75,8 +153,9 @@
 
 <p class="text-center">Összesen: <strong>@totalCount</strong> találat.</p>
 
-<table class="table">
-    <thead>
+<div class="table-wrapper">
+    <table class="table table-dark table-striped table-hover">
+        <thead>
         <tr>
             <th>
                 Játék név
@@ -104,18 +183,19 @@
                     @item.WareHouse.StorgarSize
                 </td>
                 <td>
-                    <a asp-controller="Games" asp-action="Index" asp-route-id="@item.ID" class="btn btn-primary">Betöltés</a> |
+                    <a asp-controller="Games" asp-action="Index" asp-route-id="@item.ID" class="custom-btn">Betöltés</a> |
                     <form asp-action="DeleteGame" asp-route-id="@item.ID" method="post" style="display:inline;">
-                        <input type="submit" value="Törlés" class="btn btn-danger" />
+                        <input type="submit" value="Törlés" class="custom-btn custom-btn-danger" />
                     </form>
                 </td>
             </tr>
         }
     </tbody>
-</table>
+    </table>
+</div>
 
 <div class="page_selection">
-    <a asp-action="Index" class="btn btn-secondary">Vissza</a>
+    <a asp-action="Index" class="custom-btn">Vissza</a>
     <nav>
         <ul class="pagination">
             @if (currentPage > 1)
@@ -155,4 +235,5 @@
             }
         </ul>
     </nav>
+</div>
 </div>
