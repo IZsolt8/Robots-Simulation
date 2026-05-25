@@ -48,6 +48,8 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
@@ -111,7 +113,9 @@ namespace Robot_Simulation.Controllers
             }
             var game = await _context.Games
                 .Include(g => g.WareHouse)
-                .ThenInclude(w => w.UpgradesPurchased)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -130,6 +134,8 @@ namespace Robot_Simulation.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -157,6 +163,9 @@ namespace Robot_Simulation.Controllers
         {
             var game = await _context.Games
                 .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
                 .FirstOrDefaultAsync(m => m.ID == gameId);
 
             if (game == null || game.WareHouse == null)
@@ -191,7 +200,9 @@ namespace Robot_Simulation.Controllers
         {
             var game = await _context.Games
                 .Include(g => g.WareHouse)
-                .ThenInclude(w => w.UpgradesPurchased)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == gameId);
 
             if (game == null || game.WareHouse == null)

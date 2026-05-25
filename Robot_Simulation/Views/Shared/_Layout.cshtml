@@ -86,6 +86,32 @@
         main {
             padding: 20px !important;
         }
+
+        .top_bar {
+            background-color: #192045;
+            color: #ecf0f1;
+            padding: 15px 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            font-size: 15px;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .top_bar_item {
+            display: flex;
+            gap: 8px;
+        }
+
+        .top_bar_value_green {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .top_bar_value_red {
+            color: #e74c3c;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -138,6 +164,15 @@
     }
 
     <div class="main_wrapper @(showSidebar ? "" : "full-width")">
+        @if (showSidebar && Model is Robot_Simulation.Models.Game game)
+        {
+            <div class="top_bar">
+                <div class="top_bar_item">Egyenleg: <span class="top_bar_value_green">@game.Balance $</span></div>
+                <div class="top_bar_item">Raktár mérete: @game.WareHouse.StorgarSize</div>
+                <div class="top_bar_item">foglalt hely: <span class="top_bar_value_red">@game.WareHouse.UsedSpace</span></div>
+                <div class="top_bar_item">szabad hely: <span class="top_bar_value_green">@game.WareHouse.FreeSpace</span></div>
+            </div>
+        }
         <div class="container">
             <main role="main" class="pb-3">
                 @RenderBody()
