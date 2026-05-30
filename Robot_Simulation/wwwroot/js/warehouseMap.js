@@ -50,7 +50,16 @@
         { x: 3.5, y: 9 }, { x: 6.5, y: 9 }, { x: 9.5, y: 9 }, { x: 12.5, y: 9 }, { x: 15.5, y: 9 }
     ];
 
+    let gameId = new URLSearchParams(window.location.search).get('id') || 'default';
+    const sessionKey = 'robotPositions_' + gameId;
     let robots = {}; 
+
+    try {
+        let saved = sessionStorage.getItem(sessionKey);
+        if (saved) {
+            robots = JSON.parse(saved);
+        }
+    } catch(e) {}
 
     function getRobotData() {
         const scriptTag = document.getElementById('robot-data-json');
@@ -65,6 +74,13 @@
     }
 
     function updateRobotTargets(serverRobots) {
+        let currentRobotIds = new Set(serverRobots.map(r => r.Id.toString()));
+        for (let id in robots) {
+            if (!currentRobotIds.has(id.toString())) {
+                delete robots[id];
+            }
+        }
+
         serverRobots.forEach(sr => {
             if (!robots[sr.Id]) {
                 robots[sr.Id] = {
@@ -121,6 +137,7 @@
                 }
             }
         });
+        sessionStorage.setItem(sessionKey, JSON.stringify(robots));
     }
 
     function drawGrid(ctx) {
