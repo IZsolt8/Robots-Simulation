@@ -143,24 +143,27 @@
     function drawGrid(ctx) {
         for (let y = 0; y < GRID_ROWS; y++) {
             for (let x = 0; x < GRID_COLS; x++) {
+                const px = x * TILE_W;
+                const py = y * TILE_H;
+
                 if (texturesLoaded < totalTextures) {
                     ctx.fillStyle = '#34495e';
-                    ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.fillRect(px, py, TILE_W, TILE_H);
                     ctx.strokeStyle = '#2c3e50';
-                    ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.strokeRect(px, py, TILE_W, TILE_H);
                     continue;
                 }
 
-                ctx.drawImage(textures.floor, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                ctx.drawImage(textures.floor, px, py, TILE_W, TILE_H);
                 
                 let tileType = mapGrid[y][x];
                 if (tileType === 1) {
-                    ctx.drawImage(textures.shelf, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.drawImage(textures.shelf, px, py, TILE_W, TILE_H);
                 } else if (tileType === 2) {
-                    ctx.drawImage(textures.packages, x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.drawImage(textures.packages, px, py, TILE_W, TILE_H);
                 } else if (tileType === 3) {
                     ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
-                    ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.fillRect(px, py, TILE_W, TILE_H);
                 }
             }
         }
@@ -192,55 +195,59 @@
     function drawRobots(ctx) {
         for (let id in robots) {
             let r = robots[id];
-            let px = r.x * TILE_SIZE;
-            let py = r.y * TILE_SIZE;
+            let px = r.x * TILE_W;
+            let py = r.y * TILE_H;
+            let iconSize = TILE_SIZE;
 
             if (texturesLoaded >= totalTextures) {
                 if (r.type === 'charging') {
-                    ctx.drawImage(textures.chargingRobot, px, py, TILE_SIZE, TILE_SIZE);
+                    ctx.drawImage(textures.chargingRobot, px, py, iconSize, iconSize);
                 } else {
-                    ctx.drawImage(textures.packingRobot, px, py, TILE_SIZE, TILE_SIZE);
+                    ctx.drawImage(textures.packingRobot, px, py, iconSize, iconSize);
                     
                     if (r.maxBattery > 0) {
                         let pct = Math.max(0, Math.min(1, r.battery / r.maxBattery));
                         ctx.fillStyle = 'red';
-                        ctx.fillRect(px + 4, py - 6, TILE_SIZE - 8, 4);
+                        ctx.fillRect(px + 4, py - 6, iconSize - 8, 4);
                         ctx.fillStyle = '#2ecc71';
-                        ctx.fillRect(px + 4, py - 6, (TILE_SIZE - 8) * pct, 4);
+                        ctx.fillRect(px + 4, py - 6, (iconSize - 8) * pct, 4);
                     }
 
                     if (r.isCharging) {
                         ctx.fillStyle = '#f1c40f';
                         ctx.beginPath();
-                        ctx.arc(px + TILE_SIZE - 10, py + 10, 5, 0, Math.PI * 2);
+                        ctx.arc(px + iconSize - 10, py + 10, 5, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
             } else {
                 ctx.fillStyle = r.type === 'charging' ? '#f39c12' : '#3498db';
                 ctx.beginPath();
-                ctx.arc(px + TILE_SIZE/2, py + TILE_SIZE/2, TILE_SIZE/2 - 4, 0, Math.PI * 2);
+                ctx.arc(px + iconSize/2, py + iconSize/2, iconSize/2 - 4, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
     }
 
     let lastDataFetch = 0;
+    let TILE_W = 64;
+    let TILE_H = 64;
+
     function renderLoop() {
         const canvas = document.getElementById('warehouseCanvas');
         if (canvas) {
             if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
-                canvas.width = canvas.clientWidth;
+                canvas.width  = canvas.clientWidth;
                 canvas.height = canvas.clientHeight;
             }
 
-            TILE_SIZE = Math.min(canvas.width / GRID_COLS, canvas.height / GRID_ROWS);
+            TILE_W = canvas.width  / GRID_COLS;
+            TILE_H = canvas.height / GRID_ROWS;
+            TILE_SIZE = Math.min(TILE_W, TILE_H);
+
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const offsetX = (canvas.width - TILE_SIZE * GRID_COLS) / 2;
-            const offsetY = (canvas.height - TILE_SIZE * GRID_ROWS) / 2;
-            ctx.save();
-            ctx.translate(offsetX, offsetY);
+
             let now = Date.now();
             if (now - lastDataFetch > 1000) {
                 let serverRobots = getRobotData();
@@ -251,8 +258,6 @@
             moveRobots();
             drawGrid(ctx);
             drawRobots(ctx);
-
-            ctx.restore();
         }
         
         requestAnimationFrame(renderLoop);

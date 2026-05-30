@@ -6,7 +6,7 @@
 }
 
 <div class="index-map-wrapper">
-    <canvas id="warehouseCanvas" style="border: 2px solid #34495e; background-color: #1e2a3a; display: block; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); border-radius: 8px;"></canvas>
+    <canvas id="warehouseCanvas" style="background-color: #1e2a3a;"></canvas>
 
     <script id="robot-data-json" type="application/json">
         @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WareHouse?.Robots?.Select(r => new {
@@ -20,25 +20,26 @@
 </div>
 
 <style>
+    main {
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    :root {
+        --top-bar-h: 57px;
+        --bot-bar-h: 57px;
+    }
+
     .index-map-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         width: 100%;
-        height: calc(100vh - 52px - 57px);
-        box-sizing: border-box;
-        padding: 12px;
+        height: calc(100vh - var(--top-bar-h) - var(--bot-bar-h));
+        overflow: hidden;
+        display: block;
     }
 
     #warehouseCanvas {
-        aspect-ratio: 20 / 12;
-        max-width: 100%;
-        max-height: 100%;
-        width: auto;
+        display: block;
+        width: 100%;
         height: 100%;
-    }
-
-    main {
-        padding: 0 !important;
     }
 </style>
