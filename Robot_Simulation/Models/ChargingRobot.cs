@@ -15,12 +15,10 @@
 
             if (actualRobotsToCharge.Count == 0) return;
 
-            float chargePerRobot = this.ChargingSpeed / actualRobotsToCharge.Count;
-
             foreach (var robot in actualRobotsToCharge)
             {
                 int maxBattery = robot.BatterySize > 0 ? robot.BatterySize : 10;
-                robot.BatteryLevel += chargePerRobot;
+                robot.BatteryLevel += this.ChargingSpeed;
                 
                 if (robot.BatteryLevel >= maxBattery)
                 {

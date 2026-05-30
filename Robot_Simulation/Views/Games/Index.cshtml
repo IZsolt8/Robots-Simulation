@@ -3,94 +3,45 @@
 
 @{
     ViewData["Title"] = "Raktár";
-    var todaysPackages = ViewBag.TodaysPackages as List<Packages> ?? new List<Packages>();
 }
 
-<div class="index-content-wrapper">
-    <div>Raktár</div>
+<div class="index-map-wrapper">
+    <canvas id="warehouseCanvas" style="border: 2px solid #34495e; background-color: #1e2a3a; display: block; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); border-radius: 8px;"></canvas>
 
-    <div>
-        <h4>Játék részletei</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-3">
-                <strong>Játék név:</strong>
-            </dt>
-            <dd class="col-sm-9">
-                @Model.GameName
-            </dd>
-            <dt class="col-sm-3">
-                <strong>Pakoló robotok akku kapacitása:</strong>
-            </dt>
-            <dd class="col-sm-9">
-                @if (Model.WareHouse?.Robots != null && Model.WareHouse.Robots.OfType<Robot_Simulation.Models.PackingRobot>().Any())
-                {
-                    <ul class="list-unstyled mb-0">
-                        @foreach (var group in Model.WareHouse.Robots.OfType<Robot_Simulation.Models.PackingRobot>().GroupBy(r => r.Name))
-                        {
-                            <li>
-                                <strong>@group.Key</strong> (@group.Count() db): 
-                                @string.Join(", ", group.Select(r => $"{r.BatteryLevel}")) egység
-                            </li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <span>Nincs pakoló robot.</span>
-                }
-            </dd>
-            <dt class="col-sm-3">
-                <strong>Napi karbantartási díjak:</strong>
-            </dt>
-            <dd class="col-sm-9">
-                @Model.WareHouse.TotalMaintenanceFee $ / nap <br />
-                Raktár: @Model.WareHouse.WarehouseMaintenanceFee $ / nap, Robotok: @Model.WareHouse.RobotMaintenanceFee $ / nap
-            </dd>
-        </dl>
-    </div>
-
-
-
-    <div class="mt-4">
-        <h4>@Model.CurrentDay. nap – beérkező csomagok</h4>
-        @if (!todaysPackages.Any())
-        {
-            <p>Ezen a napon nem érkezett új csomag (a raktár tele van, vagy ez az első nap).</p>
-        }
-        else
-        {
-            <table border="1" cellpadding="4" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Név</th>
-                        <th>Típus</th>
-                        <th>Ár ($)</th>
-                        <th>Tárolási idő (nap)</th>
-                        <th>Ütegköltség</th>
-                        <th>Állapot</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var pkg in todaysPackages)
-                    {
-                        <tr>
-                            <td>@pkg.Name</td>
-                            <td>@pkg.Type</td>
-                            <td>@pkg.Price</td>
-                            <td>@pkg.StorageTime</td>
-                            <td>@pkg.BatteryCost</td>
-                            <td>@(pkg.Status ? "Kész" : "Várakozik")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-    </div>
+    <script id="robot-data-json" type="application/json">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WareHouse?.Robots?.Select(r => new {
+            Id = r.ID,
+            Type = r is Robot_Simulation.Models.PackingRobot ? "packing" : "charging",
+            IsCharging = r is Robot_Simulation.Models.PackingRobot pr ? pr.IsCharging : false,
+            BatteryLevel = r is Robot_Simulation.Models.PackingRobot pr2 ? pr2.BatteryLevel : 0,
+            MaxBattery = r is Robot_Simulation.Models.PackingRobot pr3 ? pr3.BatterySize : 0
+        })))
+    </script>
 </div>
 
 <style>
-    .index-content-wrapper {
-        padding-bottom: 80px;
+    .index-map-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: calc(100vh - 52px - 57px);
+        box-sizing: border-box;
+        padding: 12px;
+    }
+
+    #warehouseCanvas {
+        /* Grid is 20 cols × 12 rows */
+        aspect-ratio: 20 / 12;
+        max-width: 100%;
+        max-height: 100%;
+        /* Fill whichever constraint is smaller */
+        width: auto;
+        height: 100%;
+    }
+
+    /* Remove default main padding for this page */
+    main {
+        padding: 0 !important;
     }
 </style>
