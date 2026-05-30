@@ -164,6 +164,15 @@
         font-weight: 700;
         font-size: 15px;
     }
+
+    .shop-card-sell-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .shop-card-sell-btn:hover {
+        background: linear-gradient(135deg, #e67e22, #d35400);
+        box-shadow: 0 2px 12px rgba(231, 76, 60, 0.3);
+    }
 </style>
 
 <script>
@@ -210,6 +219,11 @@
                 if (countSpan) {
                     const currentCount = parseInt(countSpan.textContent) || 0;
                     countSpan.textContent = (currentCount + 1) + ' db';
+                    
+                    const sellBtn = card.querySelector('.shop-card-sell-btn');
+                    if (sellBtn) {
+                        sellBtn.style.display = 'inline-block';
+                    }
                 }
 
                 button.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
@@ -227,6 +241,74 @@
             alert('Hiba történt a vásárlás során.');
             button.disabled = false;
             button.textContent = 'VÁSÁRLÁS';
+        }
+    }
+
+    async function sellRobot(button) {
+        const robotName = button.getAttribute('data-robot-name');
+        const robotType = button.getAttribute('data-robot-type');
+        const gameId = button.getAttribute('data-game-id');
+
+        if (!confirm(`Biztosan eladod a ${robotName} robotot az eredeti ára 40%-áért (ami pénzbe kerül)?`)) {
+            return;
+        }
+
+        button.disabled = true;
+        let originalText = button.textContent;
+        button.textContent = '...';
+
+        try {
+            let url = '/Games/SellRobot';
+            let requestBody = `gameId=${gameId}&robotType=${encodeURIComponent(robotType)}&robotName=${encodeURIComponent(robotName)}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: requestBody
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const topBarBalance = document.getElementById('topBarBalance');
+                const topBarMaintenanceFee = document.getElementById('topBarMaintenanceFee');
+                const topBarStorageSize = document.getElementById('topBarStorageSize');
+                const topBarUsedSpace = document.getElementById('topBarUsedSpace');
+                const topBarFreeSpace = document.getElementById('topBarFreeSpace');
+
+                if (topBarBalance) topBarBalance.textContent = result.balance + ' $';
+                if (topBarMaintenanceFee && result.maintenanceFee !== undefined) topBarMaintenanceFee.textContent = result.maintenanceFee + ' $';
+                if (topBarStorageSize && result.storageSize !== undefined) topBarStorageSize.textContent = result.storageSize;
+                if (topBarUsedSpace && result.usedSpace !== undefined) topBarUsedSpace.textContent = result.usedSpace;
+                if (topBarFreeSpace && result.freeSpace !== undefined) topBarFreeSpace.textContent = result.freeSpace;
+
+                const card = button.closest('.shop-card');
+                const countSpan = card.querySelector('.shop-card-owned-count');
+                if (countSpan) {
+                    let currentCount = parseInt(countSpan.textContent) || 0;
+                    currentCount--;
+                    countSpan.textContent = Math.max(0, currentCount) + ' db';
+                    
+                    if (currentCount <= 0) {
+                        button.style.display = 'none';
+                    }
+                }
+
+                button.style.background = 'linear-gradient(135deg, #e67e22, #d35400)';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    button.disabled = false;
+                }, 800);
+            } else {
+                alert(result.message);
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        } catch (error) {
+            alert('Hiba történt az eladás során.');
+            button.disabled = false;
+            button.textContent = originalText;
         }
     }
 </script>

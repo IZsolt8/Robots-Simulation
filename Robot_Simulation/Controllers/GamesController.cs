@@ -202,6 +202,49 @@ namespace Robot_Simulation.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> SellRobot(int gameId, string robotType, string robotName)
+        {
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
+                .FirstOrDefaultAsync(m => m.ID == gameId);
+
+            if (game == null || game.WareHouse == null)
+            {
+                return Json(new { success = false, message = "A játék nem található." });
+            }
+
+            var foundRobot = await _shopService.GetItemDetailsAsync(robotType, robotName);
+
+            if (foundRobot == null)
+            {
+                return Json(new { success = false, message = "A robot nem található a boltban." });
+            }
+
+            var price = foundRobot.Value.GetProperty("Price").GetInt32();
+            var sellCost = (int)(price * 0.4);
+
+            if (!game.CanAfford(sellCost))
+            {
+                return Json(new { success = false, message = "Nincs elegendő egyenlege az eladáshoz." });
+            }
+
+            var robotToRemove = game.WareHouse.Robots.FirstOrDefault(r => r.Name == robotName);
+            if (robotToRemove == null)
+            {
+                return Json(new { success = false, message = "Nincs ilyen robot a raktárban." });
+            }
+
+            game.DeductBalance(sellCost);
+            game.WareHouse.Robots.Remove(robotToRemove);
+            _context.Robots.Remove(robotToRemove);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> BuyUpgrade(int gameId, string upgradeName)
         {
             var game = await _context.Games

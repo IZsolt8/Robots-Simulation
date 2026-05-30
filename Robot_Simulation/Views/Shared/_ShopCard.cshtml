@@ -19,9 +19,19 @@
     <div class="shop-card-owned">
         Birtokolva: <span class="shop-card-owned-count">@Model.OwnedCount db</span>
     </div>
-    <div class="shop-card-footer" style="justify-content: center;">
+    <div class="shop-card-footer" style="justify-content: center; gap: 10px; display: flex;">
         @if (!string.IsNullOrEmpty(Model.RobotType))
         {
+            @if (Model.RobotType == "PackingRobot" || Model.RobotType == "ChargingRobot")
+            {
+                <button class="shop-card-buy-btn shop-card-sell-btn"
+                        style="@(Model.OwnedCount > 0 ? "" : "display:none;")"
+                        data-robot-name="@Model.Name"
+                        data-robot-type="@Model.RobotType"
+                        data-game-id="@Model.GameId"
+                        onclick="sellRobot(this)">ELADÁS</button>
+            }
+
             <button class="shop-card-buy-btn"
                     data-robot-name="@Model.Name"
                     data-robot-type="@Model.RobotType"
