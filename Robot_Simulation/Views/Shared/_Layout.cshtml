@@ -279,8 +279,9 @@
                         var response = await fetch(form.action, { method: "POST", body: formData });
 
                         if (response.ok) {
-                            var cacheBuster = "_=" + Date.now();
-                            var refreshUrl = INDEX_URL + "&" + cacheBuster;
+                            var currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set("_", Date.now());
+                            var refreshUrl = currentUrl.toString();
                             var refreshResponse = await fetch(refreshUrl);
                             var html = await refreshResponse.text();
                             var parser = new DOMParser();
@@ -299,11 +300,10 @@
                                 if (oldEl && newEl) oldEl.innerHTML = newEl.innerHTML;
                             });
 
-                            var isIndexPage = !!document.querySelector(".index-content-wrapper");
-                            if (isIndexPage) {
-                                var oldContent = document.querySelector(".index-content-wrapper");
-                                var newContent = doc.querySelector(".index-content-wrapper");
-                                if (oldContent && newContent) oldContent.innerHTML = newContent.innerHTML;
+                            var oldMain = document.querySelector("main");
+                            var newMain = doc.querySelector("main");
+                            if (oldMain && newMain) {
+                                oldMain.innerHTML = newMain.innerHTML;
                             }
 
 
