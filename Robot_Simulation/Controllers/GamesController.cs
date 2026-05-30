@@ -299,10 +299,8 @@ namespace Robot_Simulation.Controllers
                 return NotFound();
             }
 
-            // Robotok pakolása saját osztályukban implementálva
             game.WareHouse.ProcessDailyPacking(game.CurrentDay, remainingHours);
 
-            // Elpakolt csomagok eladása, ha lejárt a tárolási idejük
             game.ProcessDeliveries();
 
             game.NextDay();
@@ -337,6 +335,18 @@ namespace Robot_Simulation.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { id = gameId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ExitGame(int gameId)
+        {
+            var game = await _context.Games.FirstOrDefaultAsync(m => m.ID == gameId);
+            if (game != null)
+            {
+                await _context.SaveChangesAsync();
+            }
+            
+            return RedirectToAction("Index", "Home");
         }
     }
 }
