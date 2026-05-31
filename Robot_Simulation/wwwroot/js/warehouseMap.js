@@ -146,7 +146,7 @@
             } else {
                 let atTarget = Math.abs(r.x - r.targetX) < 0.2 && Math.abs(r.y - r.targetY) < 0.2;
                 
-                if (!hasPackages && r.state !== 'toShelf') {
+                if (!hasPackages && r.state !== 'toShelf' && r.state !== 'toPackage') {
                     if (r.state !== 'idle') {
                         r.state = 'idle';
                         r.targetX = r.x;
@@ -169,8 +169,8 @@
                                 r.targetX = packagePoint.x;
                                 r.targetY = packagePoint.y + Math.random() * 2;
                             }
-                        } else if (r.state === 'idle' || r.state === 'charging') {
-                            if (hasPackages) {
+                        } else if (r.state === 'idle' || r.state === 'charging' || (r.state === 'toPackage' && !atTarget)) {
+                             if (hasPackages && r.state !== 'toPackage' && r.state !== 'toShelf') {
                                 r.state = 'toPackage';
                                 r.targetX = packagePoint.x;
                                 r.targetY = packagePoint.y + Math.random() * 2;
