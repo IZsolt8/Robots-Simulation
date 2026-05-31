@@ -70,7 +70,7 @@ namespace Robot_Simulation.Models
             {
                 var template = templates[rng.Next(templates.Count)];
                 int storageTime = rng.Next(1, 9);
-                int basePrice = rng.Next(30, 3901);
+                int basePrice = rng.Next(1700, 3901);
 
                 float multiplier = 1f;
                 if (storageTime == 8)
