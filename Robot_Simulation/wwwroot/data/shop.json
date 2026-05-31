@@ -3,113 +3,112 @@
     {
       "Name": "Kis bővítés",
       "Size": 10,
-      "Price": 100,
+      "Price": 5000,
       "Img": "upgrade_1.png"
     },
     {
       "Name": "Közepes bővítés",
       "Size": 20,
-      "Price": 2000,
+      "Price": 12000,
       "Img": "upgrade_2.png"
     },
     {
       "Name": "Nagy bővítés",
       "Size": 30,
-      "Price": 10000,
+      "Price": 25000,
       "Img": "upgrade_3.png"
     }
   ],
   "PackingRobot": [
     {
       "Name": "C-3PO",
-      "MaintenanceFee": 500,
+      "MaintenanceFee": 150,
       "BatterySize": 10,
       "PackingSpeed": 1,
-      "Price": 100,
+      "Price": 2500,
       "Img": "C-3PO.png",
       "model": "C-3PO_model"
     },
     {
       "Name": "Johnny 5",
-      "MaintenanceFee": 1000,
+      "MaintenanceFee": 300,
       "BatterySize": 20,
       "PackingSpeed": 1,
-      "Price": 1200,
+      "Price": 6000,
       "Img": "Johnny_5.png",
       "model": "Johnny_5_model"
     },
     {
       "Name": "Data",
-      "MaintenanceFee": 500,
+      "MaintenanceFee": 600,
       "BatterySize": 40,
       "PackingSpeed": 2,
-      "Price": 100,
+      "Price": 14000,
       "Img": "Data.png",
       "model": "Data_model"
     },
     {
       "Name": "HAL 9000",
-      "MaintenanceFee": 1000,
+      "MaintenanceFee": 1200,
       "BatterySize": 58,
       "PackingSpeed": 3,
-      "Price": 1200,
+      "Price": 28000,
       "Img": "HAL_9000.png",
       "model": "HAL_9000_model"
     },
     {
       "Name": "Ultron",
-      "MaintenanceFee": 500,
+      "MaintenanceFee": 2000,
       "BatterySize": 70,
       "PackingSpeed": 4,
-      "Price": 100,
+      "Price": 50000,
       "Img": "Ultron.jpg",
       "model": "Ultron_model"
     },
     {
       "Name": "T-800",
-      "MaintenanceFee": 1000,
+      "MaintenanceFee": 3500,
       "BatterySize": 95,
       "PackingSpeed": 5,
-      "Price": 1200,
+      "Price": 85000,
       "Img": "T-800.png",
       "model": "T-800_model"
     }
-
   ],
   "ChargingRobot": [
     {
       "Name": "Voyager",
-      "MaintenanceFee": 500,
+      "MaintenanceFee": 150,
       "ChargingSpeed": 0.2,
       "MaxChargingCapacity": 1,
-      "Price": 100,
+      "Price": 2500,
       "Img": "Voyager.png",
       "model": "Voyager_model"
     },
     {
       "Name": "ASIMO",
-      "MaintenanceFee": 1000,
+      "MaintenanceFee": 500,
       "ChargingSpeed": 1.2,
       "MaxChargingCapacity": 5,
-      "Price": 1200,
+      "Price": 12000,
       "Img": "ASIMO.png",
       "model": "ASIMO_model"
     },
     {
       "Name": "BB-8",
-      "MaintenanceFee": 500,
+      "MaintenanceFee": 1500,
       "ChargingSpeed": 3.8,
       "MaxChargingCapacity": 8,
-      "Price": 100,
+      "Price": 35000,
       "Img": "BB-8.png",
       "model": "BB-8_model"
     },
     {
       "Name": "Sonny",
-      "MaintenanceFee": 1000,
+      "MaintenanceFee": 3000,
       "ChargingSpeed": 5.8,
       "MaxChargingCapacity": 15,
-      "Price": 1200,
+      "Price": 75000,
       "Img": "Sonny.png",
       "model": "Sonny_model"
     }
