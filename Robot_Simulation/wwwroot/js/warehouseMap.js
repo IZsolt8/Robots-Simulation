@@ -2,32 +2,45 @@
     let TILE_SIZE = 64;
     const GRID_COLS = 20;
     const GRID_ROWS = 12;
-    
-    const textures = {
+
+    const chargingSlots = [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 0, y: 1 },
+        { x: 1, y: 1 }
+    ];
+
+    const staticTextures = {
         floor: new Image(),
         packages: new Image(),
-        chargingRobot: new Image(),
-        packingRobot: new Image(),
         shelf: new Image()
     };
-    
-    let texturesLoaded = 0;
-    const totalTextures = 5;
-    
-    function initTextures() {
-        textures.floor.src = '/texture/floor.png';
-        textures.packages.src = '/texture/packages.png';
-        textures.chargingRobot.src = '/texture/charging_robots.png';
-        textures.packingRobot.src = '/texture/Packing_robot.png';
-        textures.shelf.src = '/texture/storage.png';
-        
-        for (let key in textures) {
-            textures[key].onload = () => {
-                texturesLoaded++;
-            };
+
+    let staticLoaded = 0;
+    const totalStatic = 3;
+
+    function initStaticTextures() {
+        staticTextures.floor.src = '/texture/floor.png';
+        staticTextures.packages.src = '/texture/packages.png';
+        staticTextures.shelf.src = '/texture/storage.png';
+        for (let key in staticTextures) {
+            staticTextures[key].onload = () => { staticLoaded++; };
+            staticTextures[key].onerror = () => { staticLoaded++; };
         }
     }
-    initTextures();
+    initStaticTextures();
+
+    const textureCache = {};
+
+    function getOrLoadTexture(modelFile) {
+        if (!modelFile) return null;
+        if (textureCache[modelFile]) return textureCache[modelFile];
+        const img = new Image();
+        img.src = '/texture/' + modelFile + '.png';
+        textureCache[modelFile] = img;
+        return img;
+    }
+
     const mapGrid = [
         [3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
         [3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2],
@@ -44,7 +57,6 @@
     ];
 
     const packagePoint = { x: 18, y: 0.5 };
-    const chargingPoint = { x: 0.5, y: 0.5 }; 
     const shelfPoints = [
         { x: 3.5, y: 2 }, { x: 6.5, y: 2 }, { x: 9.5, y: 2 }, { x: 12.5, y: 2 }, { x: 15.5, y: 2 },
         { x: 3.5, y: 9 }, { x: 6.5, y: 9 }, { x: 9.5, y: 9 }, { x: 12.5, y: 9 }, { x: 15.5, y: 9 }
@@ -52,23 +64,18 @@
 
     let gameId = new URLSearchParams(window.location.search).get('id') || 'default';
     const sessionKey = 'robotPositions_' + gameId;
-    let robots = {}; 
+    let robots = {};
 
     try {
         let saved = sessionStorage.getItem(sessionKey);
-        if (saved) {
-            robots = JSON.parse(saved);
-        }
+        if (saved) robots = JSON.parse(saved);
     } catch(e) {}
 
     function getRobotData() {
         const scriptTag = document.getElementById('robot-data-json');
         if (scriptTag) {
-            try {
-                return JSON.parse(scriptTag.textContent);
-            } catch (e) {
-                return [];
-            }
+            try { return JSON.parse(scriptTag.textContent); }
+            catch (e) { return []; }
         }
         return [];
     }
@@ -76,11 +83,8 @@
     function getGameData() {
         const scriptTag = document.getElementById('game-data-json');
         if (scriptTag) {
-            try {
-                return JSON.parse(scriptTag.textContent);
-            } catch (e) {
-                return { HasPackagesToPack: false };
-            }
+            try { return JSON.parse(scriptTag.textContent); }
+            catch (e) { return { HasPackagesToPack: false }; }
         }
         return { HasPackagesToPack: false };
     }
@@ -93,54 +97,62 @@
             }
         }
 
-        let gameData = getGameData();
-        let hasPackages = gameData.HasPackagesToPack;
+        let hasPackages = getGameData().HasPackagesToPack;
 
         serverRobots.forEach(sr => {
+            const slotIdx = sr.ChargingSlot >= 0 ? sr.ChargingSlot : 0;
+            const slot = chargingSlots[Math.min(slotIdx, chargingSlots.length - 1)];
+
             if (!robots[sr.Id]) {
                 robots[sr.Id] = {
                     id: sr.Id,
+                    name: sr.Name,
+                    modelFile: sr.ModelFile,
                     type: sr.Type,
-                    x: sr.Type === 'charging' ? chargingPoint.x : Math.random() * (GRID_COLS - 1),
-                    y: sr.Type === 'charging' ? chargingPoint.y : Math.random() * (GRID_ROWS - 1),
+                    x: sr.Type === 'charging' ? slot.x : Math.random() * (GRID_COLS - 1),
+                    y: sr.Type === 'charging' ? slot.y : Math.random() * (GRID_ROWS - 1),
                     targetX: 0,
                     targetY: 0,
                     isCharging: sr.IsCharging,
                     state: sr.Type === 'charging' ? 'chargingStation' : 'idle',
                     battery: sr.BatteryLevel,
-                    maxBattery: sr.MaxBattery
+                    maxBattery: sr.MaxBattery,
+                    chargingSlot: slotIdx
                 };
                 robots[sr.Id].targetX = robots[sr.Id].x;
                 robots[sr.Id].targetY = robots[sr.Id].y;
             }
 
             const r = robots[sr.Id];
+            r.name = sr.Name;
+            r.modelFile = sr.ModelFile;
             r.isCharging = sr.IsCharging;
             r.battery = sr.BatteryLevel;
             r.maxBattery = sr.MaxBattery;
+            r.chargingSlot = slotIdx;
 
             if (r.type === 'charging') {
-                r.x = chargingPoint.x;
-                r.y = chargingPoint.y;
-                r.targetX = chargingPoint.x;
-                r.targetY = chargingPoint.y;
+                r.x = slot.x;
+                r.y = slot.y;
+                r.targetX = slot.x;
+                r.targetY = slot.y;
                 return;
             }
 
             if (r.isCharging) {
                 r.state = 'charging';
-                r.targetX = chargingPoint.x;
-                r.targetY = chargingPoint.y;
+                r.targetX = chargingSlots[0].x;
+                r.targetY = chargingSlots[0].y;
             } else {
-                if (!hasPackages) {
+                let atTarget = Math.abs(r.x - r.targetX) < 0.2 && Math.abs(r.y - r.targetY) < 0.2;
+                
+                if (!hasPackages && r.state !== 'toShelf') {
                     if (r.state !== 'idle') {
                         r.state = 'idle';
                         r.targetX = r.x;
                         r.targetY = r.y;
                     }
                 } else {
-                    let atTarget = Math.abs(r.x - r.targetX) < 0.2 && Math.abs(r.y - r.targetY) < 0.2;
-                    
                     if (atTarget || r.state === 'idle' || r.state === 'charging') {
                         if (r.state === 'toPackage' && atTarget) {
                             r.state = 'toShelf';
@@ -148,18 +160,27 @@
                             r.targetX = shelf.x;
                             r.targetY = shelf.y;
                         } else if (r.state === 'toShelf' && atTarget) {
-                            r.state = 'toPackage';
-                            r.targetX = packagePoint.x;
-                            r.targetY = packagePoint.y + Math.random() * 2;
+                            if (!hasPackages) {
+                                r.state = 'idle';
+                                r.targetX = r.x;
+                                r.targetY = r.y;
+                            } else {
+                                r.state = 'toPackage';
+                                r.targetX = packagePoint.x;
+                                r.targetY = packagePoint.y + Math.random() * 2;
+                            }
                         } else if (r.state === 'idle' || r.state === 'charging') {
-                            r.state = 'toPackage';
-                            r.targetX = packagePoint.x;
-                            r.targetY = packagePoint.y + Math.random() * 2;
+                            if (hasPackages) {
+                                r.state = 'toPackage';
+                                r.targetX = packagePoint.x;
+                                r.targetY = packagePoint.y + Math.random() * 2;
+                            }
                         }
                     }
                 }
             }
         });
+
         sessionStorage.setItem(sessionKey, JSON.stringify(robots));
     }
 
@@ -169,7 +190,7 @@
                 const px = x * TILE_W;
                 const py = y * TILE_H;
 
-                if (texturesLoaded < totalTextures) {
+                if (staticLoaded < totalStatic) {
                     ctx.fillStyle = '#34495e';
                     ctx.fillRect(px, py, TILE_W, TILE_H);
                     ctx.strokeStyle = '#2c3e50';
@@ -177,13 +198,13 @@
                     continue;
                 }
 
-                ctx.drawImage(textures.floor, px, py, TILE_W, TILE_H);
-                
+                ctx.drawImage(staticTextures.floor, px, py, TILE_W, TILE_H);
+
                 let tileType = mapGrid[y][x];
                 if (tileType === 1) {
-                    ctx.drawImage(textures.shelf, px, py, TILE_W, TILE_H);
+                    ctx.drawImage(staticTextures.shelf, px, py, TILE_W, TILE_H);
                 } else if (tileType === 2) {
-                    ctx.drawImage(textures.packages, px, py, TILE_W, TILE_H);
+                    ctx.drawImage(staticTextures.packages, px, py, TILE_W, TILE_H);
                 } else if (tileType === 3) {
                     ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
                     ctx.fillRect(px, py, TILE_W, TILE_H);
@@ -193,10 +214,12 @@
     }
 
     function moveRobots() {
-        const autoKey = sessionStorage.getItem(Object.keys(sessionStorage).find(k => k.startsWith('autoDay_')));
+        const autoKey = sessionStorage.getItem(
+            Object.keys(sessionStorage).find(k => k.startsWith('autoDay_'))
+        );
         if (autoKey !== "true") return;
 
-        const speed = 0.05; 
+        const speed = 0.05;
         for (let id in robots) {
             let r = robots[id];
             if (r.type === 'charging') continue;
@@ -216,40 +239,67 @@
     }
 
     function drawRobots(ctx) {
+        const chargingBySlot = {};
         for (let id in robots) {
-            let r = robots[id];
-            let px = r.x * TILE_W;
-            let py = r.y * TILE_H;
-            let iconSize = TILE_SIZE;
+            const r = robots[id];
+            if (r.type !== 'charging') continue;
+            const slotKey = r.chargingSlot;
+            if (!chargingBySlot[slotKey]) chargingBySlot[slotKey] = [];
+            chargingBySlot[slotKey].push(r);
+        }
 
-            if (texturesLoaded >= totalTextures) {
-                if (r.type === 'charging') {
-                    ctx.drawImage(textures.chargingRobot, px, py, iconSize, iconSize);
-                } else {
-                    ctx.drawImage(textures.packingRobot, px, py, iconSize, iconSize);
-                    
-                    if (r.maxBattery > 0) {
-                        let pct = Math.max(0, Math.min(1, r.battery / r.maxBattery));
-                        ctx.fillStyle = 'red';
-                        ctx.fillRect(px + 4, py - 6, iconSize - 8, 4);
-                        ctx.fillStyle = '#2ecc71';
-                        ctx.fillRect(px + 4, py - 6, (iconSize - 8) * pct, 4);
-                    }
+        for (let slotKey in chargingBySlot) {
+            const group = chargingBySlot[slotKey];
+            const rep = group[0];
+            const slot = chargingSlots[Math.min(parseInt(slotKey), chargingSlots.length - 1)];
+            const px = slot.x * TILE_W;
+            const py = slot.y * TILE_H;
+            const iconSize = TILE_SIZE;
 
-                    if (r.isCharging) {
-                        ctx.fillStyle = '#f1c40f';
-                        ctx.beginPath();
-                        ctx.arc(px + iconSize - 10, py + 10, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
+            const robotImg = getOrLoadTexture(rep.modelFile);
+
+            if (robotImg && robotImg.complete && robotImg.naturalWidth > 0) {
+                ctx.drawImage(robotImg, px, py, iconSize, iconSize);
             } else {
-                ctx.fillStyle = r.type === 'charging' ? '#f39c12' : '#3498db';
+                ctx.fillStyle = '#f39c12';
                 ctx.beginPath();
-                ctx.arc(px + iconSize/2, py + iconSize/2, iconSize/2 - 4, 0, Math.PI * 2);
+                ctx.arc(px + iconSize / 2, py + iconSize / 2, iconSize / 2 - 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+
+        }
+
+        for (let id in robots) {
+            const r = robots[id];
+            if (r.type !== 'packing') continue;
+
+            const px = r.x * TILE_W;
+            const py = r.y * TILE_H;
+            const iconSize = TILE_SIZE;
+
+            const robotImg = getOrLoadTexture(r.modelFile);
+
+            if (robotImg && robotImg.complete && robotImg.naturalWidth > 0) {
+                ctx.drawImage(robotImg, px, py, iconSize, iconSize);
+            } else {
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(px + iconSize / 2, py + iconSize / 2, iconSize / 2 - 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (r.isCharging) {
+                ctx.fillStyle = '#f1c40f';
+                ctx.beginPath();
+                ctx.arc(px + iconSize - 10, py + 10, 5, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
+
+
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
     }
 
     let lastDataFetch = 0;
@@ -282,7 +332,7 @@
             drawGrid(ctx);
             drawRobots(ctx);
         }
-        
+
         requestAnimationFrame(renderLoop);
     }
 

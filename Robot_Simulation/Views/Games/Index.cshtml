@@ -9,12 +9,26 @@
     <canvas id="warehouseCanvas" style="background-color: #1e2a3a;"></canvas>
 
     <script id="robot-data-json" type="application/json">
+        @{
+            // shop.json beolvasása a töltő robot típus → slot index meghatározáshoz
+            var shopPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "data", "shop.json");
+            var shopDoc = System.Text.Json.JsonDocument.Parse(System.IO.File.ReadAllText(shopPath));
+            var chargingTypeSlots = shopDoc.RootElement.GetProperty("ChargingRobot")
+                .EnumerateArray()
+                .Select((r, i) => new { Name = r.GetProperty("Name").GetString()!, Slot = i })
+                .ToDictionary(x => x.Name, x => x.Slot);
+        }
         @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.WareHouse?.Robots?.Select(r => new {
             Id = r.ID,
+            Name = r.Name,
+            ModelFile = r.Name.Replace(" ", "_") + "_model",
             Type = r is Robot_Simulation.Models.PackingRobot ? "packing" : "charging",
             IsCharging = r is Robot_Simulation.Models.PackingRobot pr ? pr.IsCharging : false,
             BatteryLevel = r is Robot_Simulation.Models.PackingRobot pr2 ? pr2.BatteryLevel : 0,
-            MaxBattery = r is Robot_Simulation.Models.PackingRobot pr3 ? pr3.BatterySize : 0
+            MaxBattery = r is Robot_Simulation.Models.PackingRobot pr3 ? pr3.BatterySize : 0,
+            ChargingSlot = r is Robot_Simulation.Models.ChargingRobot
+                ? (chargingTypeSlots.TryGetValue(r.Name, out var slot) ? slot : 0)
+                : -1
         })))
     </script>
     <script id="game-data-json" type="application/json">

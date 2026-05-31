@@ -26,7 +26,8 @@
       "BatterySize": 10,
       "PackingSpeed": 1,
       "Price": 100,
-      "Img": "C-3PO.png"
+      "Img": "C-3PO.png",
+      "model": "C-3PO_model"
     },
     {
       "Name": "Johnny 5",
@@ -34,7 +35,8 @@
       "BatterySize": 20,
       "PackingSpeed": 1,
       "Price": 1200,
-      "Img": "Johnny_5.png"
+      "Img": "Johnny_5.png",
+      "model": "Johnny_5_model"
     },
     {
       "Name": "Data",
@@ -42,7 +44,8 @@
       "BatterySize": 40,
       "PackingSpeed": 2,
       "Price": 100,
-      "Img": "Data.png"
+      "Img": "Data.png",
+      "model": "Data_model"
     },
     {
       "Name": "HAL 9000",
@@ -50,7 +53,8 @@
       "BatterySize": 58,
       "PackingSpeed": 3,
       "Price": 1200,
-      "Img": "HAL_9000.png"
+      "Img": "HAL_9000.png",
+      "model": "HAL_9000_model"
     },
     {
       "Name": "Ultron",
@@ -58,7 +62,8 @@
       "BatterySize": 70,
       "PackingSpeed": 4,
       "Price": 100,
-      "Img": "Ultron.jpg"
+      "Img": "Ultron.jpg",
+      "model": "Ultron_model"
     },
     {
       "Name": "T-800",
@@ -66,7 +71,8 @@
       "BatterySize": 95,
       "PackingSpeed": 5,
       "Price": 1200,
-      "Img": "T-800.png"
+      "Img": "T-800.png",
+      "model": "T-800_model"
     }
 
   ],
@@ -77,7 +83,8 @@
       "ChargingSpeed": 0.2,
       "MaxChargingCapacity": 1,
       "Price": 100,
-      "Img": "Voyager.png"
+      "Img": "Voyager.png",
+      "model": "Voyager_model"
     },
     {
       "Name": "ASIMO",
@@ -85,7 +92,8 @@
       "ChargingSpeed": 1.2,
       "MaxChargingCapacity": 5,
       "Price": 1200,
-      "Img": "ASIMO.png"
+      "Img": "ASIMO.png",
+      "model": "ASIMO_model"
     },
     {
       "Name": "BB-8",
@@ -93,7 +101,8 @@
       "ChargingSpeed": 3.8,
       "MaxChargingCapacity": 8,
       "Price": 100,
-      "Img": "BB-8.png"
+      "Img": "BB-8.png",
+      "model": "BB-8_model"
     },
     {
       "Name": "Sonny",
@@ -101,7 +110,8 @@
       "ChargingSpeed": 5.8,
       "MaxChargingCapacity": 15,
       "Price": 1200,
-      "Img": "Sonny.png"
+      "Img": "Sonny.png",
+      "model": "Sonny_model"
     }
   ]
 }
