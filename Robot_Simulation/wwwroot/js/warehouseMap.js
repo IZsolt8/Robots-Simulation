@@ -73,6 +73,18 @@
         return [];
     }
 
+    function getGameData() {
+        const scriptTag = document.getElementById('game-data-json');
+        if (scriptTag) {
+            try {
+                return JSON.parse(scriptTag.textContent);
+            } catch (e) {
+                return { HasPackagesToPack: false };
+            }
+        }
+        return { HasPackagesToPack: false };
+    }
+
     function updateRobotTargets(serverRobots) {
         let currentRobotIds = new Set(serverRobots.map(r => r.Id.toString()));
         for (let id in robots) {
@@ -80,6 +92,9 @@
                 delete robots[id];
             }
         }
+
+        let gameData = getGameData();
+        let hasPackages = gameData.HasPackagesToPack;
 
         serverRobots.forEach(sr => {
             if (!robots[sr.Id]) {
@@ -113,26 +128,34 @@
             }
 
             if (r.isCharging) {
-                r.state = 'toCharger';
-                r.targetX = chargingPoint.x + Math.random() - 0.5;
-                r.targetY = chargingPoint.y + Math.random() - 0.5;
+                r.state = 'charging';
+                r.targetX = chargingPoint.x;
+                r.targetY = chargingPoint.y;
             } else {
-                let atTarget = Math.abs(r.x - r.targetX) < 0.2 && Math.abs(r.y - r.targetY) < 0.2;
-                
-                if (atTarget || r.state === 'idle' || r.state === 'toCharger') {
-                    if (r.state === 'toPackage' && atTarget) {
-                        r.state = 'toShelf';
-                        let shelf = shelfPoints[Math.floor(Math.random() * shelfPoints.length)];
-                        r.targetX = shelf.x;
-                        r.targetY = shelf.y;
-                    } else if (r.state === 'toShelf' && atTarget) {
-                        r.state = 'toPackage';
-                        r.targetX = packagePoint.x;
-                        r.targetY = packagePoint.y + Math.random() * 2;
-                    } else if (r.state === 'idle' || r.state === 'toCharger') {
-                        r.state = 'toPackage';
-                        r.targetX = packagePoint.x;
-                        r.targetY = packagePoint.y + Math.random() * 2;
+                if (!hasPackages) {
+                    if (r.state !== 'idle') {
+                        r.state = 'idle';
+                        r.targetX = r.x;
+                        r.targetY = r.y;
+                    }
+                } else {
+                    let atTarget = Math.abs(r.x - r.targetX) < 0.2 && Math.abs(r.y - r.targetY) < 0.2;
+                    
+                    if (atTarget || r.state === 'idle' || r.state === 'charging') {
+                        if (r.state === 'toPackage' && atTarget) {
+                            r.state = 'toShelf';
+                            let shelf = shelfPoints[Math.floor(Math.random() * shelfPoints.length)];
+                            r.targetX = shelf.x;
+                            r.targetY = shelf.y;
+                        } else if (r.state === 'toShelf' && atTarget) {
+                            r.state = 'toPackage';
+                            r.targetX = packagePoint.x;
+                            r.targetY = packagePoint.y + Math.random() * 2;
+                        } else if (r.state === 'idle' || r.state === 'charging') {
+                            r.state = 'toPackage';
+                            r.targetX = packagePoint.x;
+                            r.targetY = packagePoint.y + Math.random() * 2;
+                        }
                     }
                 }
             }

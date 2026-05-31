@@ -17,6 +17,11 @@
             MaxBattery = r is Robot_Simulation.Models.PackingRobot pr3 ? pr3.BatterySize : 0
         })))
     </script>
+    <script id="game-data-json" type="application/json">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+            HasPackagesToPack = Model.WareHouse?.PackagesWaitingForPacking?.Any() ?? false
+        }))
+    </script>
 </div>
 
 <style>
