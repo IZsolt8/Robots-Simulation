@@ -63,7 +63,7 @@ namespace Robot_Simulation.Models
 
             if (wareHouse.FreeSpace <= 0) return new List<Packages>();
 
-            int count = Math.Max(1, (int)Math.Floor(wareHouse.FreeSpace * 0.3));
+            int count = Math.Max(1, (int)Math.Floor(wareHouse.FreeSpace * 0.6));
 
             var result = new List<Packages>();
             for (int i = 0; i < count; i++)

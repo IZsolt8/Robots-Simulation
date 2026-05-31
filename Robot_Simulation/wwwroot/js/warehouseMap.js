@@ -288,15 +288,7 @@
                 ctx.arc(px + iconSize / 2, py + iconSize / 2, iconSize / 2 - 4, 0, Math.PI * 2);
                 ctx.fill();
             }
-
-            if (r.isCharging) {
-                ctx.fillStyle = '#f1c40f';
-                ctx.beginPath();
-                ctx.arc(px + iconSize - 10, py + 10, 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
         }
-
 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'alphabetic';

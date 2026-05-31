@@ -11,9 +11,12 @@ namespace Robots_Simulation.Controllers
     public class HomeController : Controller
     {
         private readonly RobotSimulationContext _context;
-        public HomeController(RobotSimulationContext context)
+        private readonly IWebHostEnvironment _env;
+
+        public HomeController(RobotSimulationContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
         public IActionResult Index()
         {
@@ -38,7 +41,37 @@ namespace Robots_Simulation.Controllers
                 _context.Add(newWarehouse);
                 await _context.SaveChangesAsync();
 
+                var c3po = new PackingRobot
+                {
+                    Name = "C-3PO",
+                    MaintenanceFee = 500,
+                    BatterySize = 10,
+                    BatteryLevel = 10,
+                    PackingSpeed = 1,
+                    Status = true,
+                    WareHouseId = newWarehouse.ID
+                };
+
+                var voyager = new ChargingRobot
+                {
+                    Name = "Voyager",
+                    MaintenanceFee = 500,
+                    ChargingSpeed = 0.2f,
+                    MaxChargingCapacity = 1,
+                    Status = true,
+                    WareHouseId = newWarehouse.ID
+                };
+
+                _context.Add(c3po);
+                _context.Add(voyager);
+
                 game.WarehouseId = newWarehouse.ID;
+                game.CurrentDay = 0;
+                game.CurrentHour = 0;
+
+                var packageJsonPath = Path.Combine(_env.WebRootPath, "data", "Package.json");
+                var newPackages = Packages.GenerateForWarehouse(newWarehouse, packageJsonPath, game.CurrentDay);
+                _context.Packages.AddRange(newPackages);
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
