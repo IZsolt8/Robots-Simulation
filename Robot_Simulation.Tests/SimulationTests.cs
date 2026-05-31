@@ -4,6 +4,9 @@ using Robot_Simulation.Models;
 using Robots_Simulation.Controllers;
 using System.Text.Json;
 using Xunit;
+using Microsoft.AspNetCore.Hosting;
+using Moq;
+using System.IO;
 
 namespace Robot_Simulation.Tests
 {
@@ -18,12 +21,20 @@ namespace Robot_Simulation.Tests
             return new RobotSimulationContext(options);
         }
 
+        private IWebHostEnvironment GetMockEnvironment()
+        {
+            var mockEnv = new Mock<IWebHostEnvironment>();
+            mockEnv.Setup(m => m.WebRootPath).Returns(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"));
+            return mockEnv.Object;
+        }
+
         [Fact]
         public async Task Test_CreateGame()
         {
             // Arrange
             var context = GetInMemoryDbContext();
-            var controller = new HomeController(context);
+            var env = GetMockEnvironment();
+            var controller = new HomeController(context, env);
             var newGame = new Game { GameName = "Test Game" };
 
             // Act
@@ -47,7 +58,8 @@ namespace Robot_Simulation.Tests
             context.Games.Add(game);
             await context.SaveChangesAsync();
 
-            var controller = new HomeController(context);
+            var env = GetMockEnvironment();
+            var controller = new HomeController(context, env);
 
             // Act
             var result = await controller.DeleteConfirmed(game.ID);
@@ -75,7 +87,8 @@ namespace Robot_Simulation.Tests
             context.Games.Add(new Game { GameName = "Loadable 2", Balance = 20000, WarehouseId = w2.ID });
             await context.SaveChangesAsync();
 
-            var controller = new HomeController(context);
+            var env = GetMockEnvironment();
+            var controller = new HomeController(context, env);
 
             // Act
             var result = await controller.LoadGame(null) as Microsoft.AspNetCore.Mvc.ViewResult;
