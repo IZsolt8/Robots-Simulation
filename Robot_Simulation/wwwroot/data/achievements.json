@@ -1,0 +1,214 @@
+{
+  "achievements": [
+    {
+      "id": "expansion_1",
+      "title": "Kezdő Raktáros",
+      "description": "Vedd meg az első raktárbővítésed."
+    },
+    {
+      "id": "expansion_100",
+      "title": "Helycsináló",
+      "description": "Bővítsd a raktáradat 100 férőhelyesre."
+    },
+    {
+      "id": "expansion_500",
+      "title": "Terjeszkedés",
+      "description": "Bővítsd a raktáradat 500 férőhelyesre."
+    },
+    {
+      "id": "expansion_1000",
+      "title": "Nagyüzem",
+      "description": "Bővítsd a raktáradat 1000 férőhelyesre."
+    },
+    {
+      "id": "expansion_5000",
+      "title": "Logisztikai Központ",
+      "description": "Bővítsd a raktáradat 5000 férőhelyesre."
+    },
+    {
+      "id": "expansion_10000",
+      "title": "Raktárbirodalom",
+      "description": "Bővítsd a raktáradat 10000 férőhelyesre."
+    },
+    {
+      "id": "packer_1",
+      "title": "Új Munkatárs",
+      "description": "Vásárolj 1 db pakoló robotot."
+    },
+    {
+      "id": "packer_10",
+      "title": "Kis Csapat",
+      "description": "Vásárolj 10 db pakoló robotot."
+    },
+    {
+      "id": "packer_25",
+      "title": "Gépesített Sereg",
+      "description": "Vásárolj 25 db pakoló robotot."
+    },
+    {
+      "id": "packer_50",
+      "title": "Robotraj",
+      "description": "Vásárolj 50 db pakoló robotot."
+    },
+    {
+      "id": "charger_1",
+      "title": "Mobil Konnektor",
+      "description": "Vásárolj 1 db töltő robotot."
+    },
+    {
+      "id": "charger_5",
+      "title": "Energia Osztag",
+      "description": "Vásárolj 5 db töltő robotot."
+    },
+    {
+      "id": "charger_10",
+      "title": "Gyorstöltők",
+      "description": "Vásárolj 10 db töltő robotot."
+    },
+    {
+      "id": "charger_20",
+      "title": "Mozgó Erőmű",
+      "description": "Vásárolj 20 db töltő robotot."
+    },
+    {
+      "id": "money_100k",
+      "title": "Szép Zsebpénz",
+      "description": "Érje el az egyenleged a 100.000 $-t."
+    },
+    {
+      "id": "money_500k",
+      "title": "Félmillió",
+      "description": "Érje el az egyenleged a 500.000 $-t."
+    },
+    {
+      "id": "money_1m",
+      "title": "Első Millióm",
+      "description": "Érje el az egyenleged az 1.000.000 $-t."
+    },
+    {
+      "id": "money_5m",
+      "title": "Gazdag Raktáros",
+      "description": "Érje el az egyenleged az 5.000.000 $-t."
+    },
+    {
+      "id": "money_10m",
+      "title": "Logisztikai Mágnás",
+      "description": "Érje el az egyenleged a 10.000.000 $-t."
+    },
+    {
+      "id": "money_50m",
+      "title": "Pénzhegyek",
+      "description": "Érje el az egyenleged a 50.000.000 $-t."
+    },
+    {
+      "id": "money_100m",
+      "title": "Százmilliomos",
+      "description": "Érje el az egyenleged a 100.000.000 $-t."
+    },
+    {
+      "id": "packages_50",
+      "title": "Első Szállítmány",
+      "description": "Pakoljanak el a pakoló robotok 50 csomagot."
+    },
+    {
+      "id": "packages_100",
+      "title": "Bemelegítés",
+      "description": "Pakoljanak el a pakoló robotok 100 csomagot."
+    },
+    {
+      "id": "packages_500",
+      "title": "Szorgos Kezek",
+      "description": "Pakoljanak el a pakoló robotok 500 csomagot."
+    },
+    {
+      "id": "packages_1000",
+      "title": "Dobozkirály",
+      "description": "Pakoljanak el a pakoló robotok 1000 csomagot."
+    },
+    {
+      "id": "packages_5000",
+      "title": "Szalagmunkás",
+      "description": "Pakoljanak el a pakoló robotok 5000 csomagot."
+    },
+    {
+      "id": "packages_10000",
+      "title": "Csomagözön",
+      "description": "Pakoljanak el a pakoló robotok 10000 csomagot."
+    },
+    {
+      "id": "packages_50000",
+      "title": "Megállíthatatlanok",
+      "description": "Pakoljanak el a pakoló robotok 50000 csomagot."
+    },
+    {
+      "id": "packages_100000",
+      "title": "Logisztikai Isten",
+      "description": "Pakoljanak el a pakoló robotok 100000 csomagot."
+    },
+    {
+      "id": "energy_50",
+      "title": "Szikra",
+      "description": "Töltsenek a töltő robotok összesen 50 energiát."
+    },
+    {
+      "id": "energy_100",
+      "title": "Alacsony Feszültség",
+      "description": "Töltsenek a töltő robotok összesen 100 energiát."
+    },
+    {
+      "id": "energy_500",
+      "title": "Töltőállomás",
+      "description": "Töltsenek a töltő robotok összesen 500 energiát."
+    },
+    {
+      "id": "energy_1000",
+      "title": "Nagyfeszültség",
+      "description": "Töltsenek a töltő robotok összesen 1000 energiát."
+    },
+    {
+      "id": "energy_5000",
+      "title": "Generátor",
+      "description": "Töltsenek a töltő robotok összesen 5000 energiát."
+    },
+    {
+      "id": "energy_10000",
+      "title": "Erőmű",
+      "description": "Töltsenek a töltő robotok összesen 10000 energiát."
+    },
+    {
+      "id": "energy_50000",
+      "title": "Túlfeszültség",
+      "description": "Töltsenek a töltő robotok összesen 50000 energiát."
+    },
+    {
+      "id": "energy_100000",
+      "title": "Végtelen Energia",
+      "description": "Töltsenek a töltő robotok összesen 100000 energiát."
+    },
+    {
+      "id": "days_50",
+      "title": "Próbaidő Vége",
+      "description": "Érd el az 50 játéknapot."
+    },
+    {
+      "id": "days_100",
+      "title": "Tapasztalt Vezető",
+      "description": "Érd el a 100 játéknapot."
+    },
+    {
+      "id": "days_500",
+      "title": "Veterán",
+      "description": "Érd el az 500 játéknapot."
+    },
+    {
+      "id": "days_1000",
+      "title": "Törzsgárda",
+      "description": "Érd el az 1000 játéknapot."
+    },
+    {
+      "id": "days_5000",
+      "title": "Időtlen Logisztika",
+      "description": "Érd el az 5000 játéknapot."
+    }
+  ]
+}
