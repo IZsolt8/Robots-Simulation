@@ -9,12 +9,14 @@ namespace Robot_Simulation.Controllers
         private readonly RobotSimulationContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly Robot_Simulation.Services.ShopService _shopService;
+        private readonly Robot_Simulation.Services.AchievementService _achievementService;
 
-        public GamesController(RobotSimulationContext context, IWebHostEnvironment env, Robot_Simulation.Services.ShopService shopService)
+        public GamesController(RobotSimulationContext context, IWebHostEnvironment env, Robot_Simulation.Services.ShopService shopService, Robot_Simulation.Services.AchievementService achievementService)
         {
             _context = context;
             _env = env;
             _shopService = shopService;
+            _achievementService = achievementService;
         }
         public async Task<IActionResult> Index(int? id)
         {
@@ -133,6 +135,25 @@ namespace Robot_Simulation.Controllers
             return View(game);
         }
 
+        public async Task<IActionResult> Trophies(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var game = await _context.Games
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.Robots)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+            return View(game);
+        }
+
         public async Task<IActionResult> ChargingShop(int? id)
         {
             if (id == null)
@@ -198,7 +219,9 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
+            var newAchievements = await _achievementService.CheckAchievementsAsync(gameId);
+
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace, newAchievements });
         }
 
         [HttpPost]
@@ -241,7 +264,9 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
+            var newAchievements = await _achievementService.CheckAchievementsAsync(gameId);
+
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace, newAchievements });
         }
 
         [HttpPost]
@@ -281,7 +306,9 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace });
+            var newAchievements = await _achievementService.CheckAchievementsAsync(gameId);
+
+            return Json(new { success = true, balance = game.Balance, maintenanceFee = game.WareHouse.TotalMaintenanceFee, storageSize = game.WareHouse.StorgarSize, usedSpace = game.WareHouse.UsedSpace, freeSpace = game.WareHouse.FreeSpace, newAchievements });
         }
 
         [HttpPost]
@@ -311,6 +338,8 @@ namespace Robot_Simulation.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _achievementService.CheckAchievementsAsync(gameId);
+
             return RedirectToAction(nameof(Index), new { id = gameId });
         }
 
@@ -334,7 +363,21 @@ namespace Robot_Simulation.Controllers
             
             await _context.SaveChangesAsync();
 
+            await _achievementService.CheckAchievementsAsync(gameId);
+
             return RedirectToAction(nameof(Index), new { id = gameId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnlockedAchievements(int gameId)
+        {
+            var game = await _context.Games
+                .Include(g => g.UnlockedAchievements)
+                .FirstOrDefaultAsync(g => g.ID == gameId);
+            
+            if (game == null) return Json(new List<string>());
+
+            return Json(game.UnlockedAchievements.Select(a => a.AchievementId).ToList());
         }
 
         [HttpPost]

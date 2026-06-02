@@ -3,212 +3,254 @@
     {
       "id": "expansion_1",
       "title": "Kezdő Raktáros",
-      "description": "Vedd meg az első raktárbővítésed."
+      "description": "Vedd meg az első raktárbővítésed.",
+      "img": "expansion_1.png"
     },
     {
       "id": "expansion_100",
       "title": "Helycsináló",
-      "description": "Bővítsd a raktáradat 100 férőhelyesre."
+      "description": "Bővítsd a raktáradat 100 férőhelyesre.",
+      "img": "expansion_100.png"
     },
     {
       "id": "expansion_500",
       "title": "Terjeszkedés",
-      "description": "Bővítsd a raktáradat 500 férőhelyesre."
+      "description": "Bővítsd a raktáradat 500 férőhelyesre.",
+      "img": "expansion_500.png"  
     },
     {
       "id": "expansion_1000",
       "title": "Nagyüzem",
-      "description": "Bővítsd a raktáradat 1000 férőhelyesre."
+      "description": "Bővítsd a raktáradat 1000 férőhelyesre.",
+      "img": "expansion_1000.png"
     },
     {
       "id": "expansion_5000",
       "title": "Logisztikai Központ",
-      "description": "Bővítsd a raktáradat 5000 férőhelyesre."
+      "description": "Bővítsd a raktáradat 5000 férőhelyesre.",
+      "img": "expansion_5000.png"
     },
     {
       "id": "expansion_10000",
       "title": "Raktárbirodalom",
-      "description": "Bővítsd a raktáradat 10000 férőhelyesre."
+      "description": "Bővítsd a raktáradat 10000 férőhelyesre.",
+      "img": "expansion_10000.png"
     },
     {
       "id": "packer_1",
       "title": "Új Munkatárs",
-      "description": "Vásárolj 1 db pakoló robotot."
+      "description": "Vásárolj 1 db pakoló robotot.",
+      "img": "packer_1.png"
     },
     {
       "id": "packer_10",
       "title": "Kis Csapat",
-      "description": "Vásárolj 10 db pakoló robotot."
+      "description": "Vásárolj 10 db pakoló robotot.",
+      "img": "packer_10.png"
     },
     {
       "id": "packer_25",
       "title": "Gépesített Sereg",
-      "description": "Vásárolj 25 db pakoló robotot."
+      "description": "Vásárolj 25 db pakoló robotot.",
+      "img": "packer_25.png"
     },
     {
       "id": "packer_50",
       "title": "Robotraj",
-      "description": "Vásárolj 50 db pakoló robotot."
+      "description": "Vásárolj 50 db pakoló robotot.",
+      "img": "packer_50.png"
     },
     {
       "id": "charger_1",
       "title": "Mobil Konnektor",
-      "description": "Vásárolj 1 db töltő robotot."
+      "description": "Vásárolj 1 db töltő robotot.",
+      "img": "charger_1.png"
     },
     {
       "id": "charger_5",
       "title": "Energia Osztag",
-      "description": "Vásárolj 5 db töltő robotot."
+      "description": "Vásárolj 5 db töltő robotot.",
+      "img": "charger_5.png"
     },
     {
       "id": "charger_10",
       "title": "Gyorstöltők",
-      "description": "Vásárolj 10 db töltő robotot."
+      "description": "Vásárolj 10 db töltő robotot.",
+      "img": "charger_10.png"
     },
     {
       "id": "charger_20",
       "title": "Mozgó Erőmű",
-      "description": "Vásárolj 20 db töltő robotot."
+      "description": "Vásárolj 20 db töltő robotot.",
+      "img": "charger_20.png"
     },
     {
       "id": "money_100k",
       "title": "Szép Zsebpénz",
-      "description": "Érje el az egyenleged a 100.000 $-t."
+      "description": "Érje el az egyenleged a 100.000 $-t.",
+      "img": "money_100k.png"
     },
     {
       "id": "money_500k",
       "title": "Félmillió",
-      "description": "Érje el az egyenleged a 500.000 $-t."
+      "description": "Érje el az egyenleged a 500.000 $-t.",
+      "img": "money_500k.png"
     },
     {
       "id": "money_1m",
       "title": "Első Millióm",
-      "description": "Érje el az egyenleged az 1.000.000 $-t."
+      "description": "Érje el az egyenleged az 1.000.000 $-t.",
+      "img": "money_1m.png"
     },
     {
       "id": "money_5m",
       "title": "Gazdag Raktáros",
-      "description": "Érje el az egyenleged az 5.000.000 $-t."
+      "description": "Érje el az egyenleged az 5.000.000 $-t.",
+      "img": "money_5m.png"
     },
     {
       "id": "money_10m",
       "title": "Logisztikai Mágnás",
-      "description": "Érje el az egyenleged a 10.000.000 $-t."
+      "description": "Érje el az egyenleged a 10.000.000 $-t.",
+      "img": "money_10m.png"
     },
     {
       "id": "money_50m",
       "title": "Pénzhegyek",
-      "description": "Érje el az egyenleged a 50.000.000 $-t."
+      "description": "Érje el az egyenleged a 50.000.000 $-t.",
+      "img": "money_50m.png"
     },
     {
       "id": "money_100m",
       "title": "Százmilliomos",
-      "description": "Érje el az egyenleged a 100.000.000 $-t."
+      "description": "Érje el az egyenleged a 100.000.000 $-t.",
+      "img": "money_100m.png"
     },
     {
       "id": "packages_50",
       "title": "Első Szállítmány",
-      "description": "Pakoljanak el a pakoló robotok 50 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 50 csomagot.",
+      "img": "packages_50.png"
     },
     {
       "id": "packages_100",
       "title": "Bemelegítés",
-      "description": "Pakoljanak el a pakoló robotok 100 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 100 csomagot.",
+      "img": "packages_100.png"
     },
     {
       "id": "packages_500",
       "title": "Szorgos Kezek",
-      "description": "Pakoljanak el a pakoló robotok 500 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 500 csomagot.",
+      "img": "packages_500.png"
     },
     {
       "id": "packages_1000",
       "title": "Dobozkirály",
-      "description": "Pakoljanak el a pakoló robotok 1000 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 1000 csomagot.",
+      "img": "packages_1000.png"
     },
     {
       "id": "packages_5000",
       "title": "Szalagmunkás",
-      "description": "Pakoljanak el a pakoló robotok 5000 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 5000 csomagot.",
+      "img": "packages_5000.png"
     },
     {
       "id": "packages_10000",
       "title": "Csomagözön",
-      "description": "Pakoljanak el a pakoló robotok 10000 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 10000 csomagot.",
+      "img": "packages_10000.png"
     },
     {
       "id": "packages_50000",
       "title": "Megállíthatatlanok",
-      "description": "Pakoljanak el a pakoló robotok 50000 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 50000 csomagot.",
+      "img": "packages_50000.png"
     },
     {
       "id": "packages_100000",
       "title": "Logisztikai Isten",
-      "description": "Pakoljanak el a pakoló robotok 100000 csomagot."
+      "description": "Pakoljanak el a pakoló robotok 100000 csomagot.",
+      "img": "packages_100000.png"
     },
     {
       "id": "energy_50",
       "title": "Szikra",
-      "description": "Töltsenek a töltő robotok összesen 50 energiát."
+      "description": "Töltsenek a töltő robotok összesen 50 energiát.",
+      "img": "energy_50.png"
     },
     {
       "id": "energy_100",
       "title": "Alacsony Feszültség",
-      "description": "Töltsenek a töltő robotok összesen 100 energiát."
+      "description": "Töltsenek a töltő robotok összesen 100 energiát.",
+      "img": "energy_100.png"
     },
     {
       "id": "energy_500",
       "title": "Töltőállomás",
-      "description": "Töltsenek a töltő robotok összesen 500 energiát."
+      "description": "Töltsenek a töltő robotok összesen 500 energiát.",
+      "img": "energy_500.png"
     },
     {
       "id": "energy_1000",
       "title": "Nagyfeszültség",
-      "description": "Töltsenek a töltő robotok összesen 1000 energiát."
+      "description": "Töltsenek a töltő robotok összesen 1000 energiát.",
+      "img": "energy_1000.png"
     },
     {
       "id": "energy_5000",
       "title": "Generátor",
-      "description": "Töltsenek a töltő robotok összesen 5000 energiát."
+      "description": "Töltsenek a töltő robotok összesen 5000 energiát.",
+      "img": "energy_5000.png"
     },
     {
       "id": "energy_10000",
       "title": "Erőmű",
-      "description": "Töltsenek a töltő robotok összesen 10000 energiát."
+      "description": "Töltsenek a töltő robotok összesen 10000 energiát.",
+      "img": "energy_10000.png"
     },
     {
       "id": "energy_50000",
       "title": "Túlfeszültség",
-      "description": "Töltsenek a töltő robotok összesen 50000 energiát."
+      "description": "Töltsenek a töltő robotok összesen 50000 energiát.",
+      "img": "energy_50000.png"
     },
     {
       "id": "energy_100000",
       "title": "Végtelen Energia",
-      "description": "Töltsenek a töltő robotok összesen 100000 energiát."
+      "description": "Töltsenek a töltő robotok összesen 100000 energiát.",
+      "img": "energy_100000.png"
     },
     {
       "id": "days_50",
       "title": "Próbaidő Vége",
-      "description": "Érd el az 50 játéknapot."
+      "description": "Érd el az 50 játéknapot.",
+      "img": "days_50.png"
     },
     {
       "id": "days_100",
       "title": "Tapasztalt Vezető",
-      "description": "Érd el a 100 játéknapot."
+      "description": "Érd el a 100 játéknapot.",
+      "img": "days_100.png"
     },
     {
       "id": "days_500",
       "title": "Veterán",
-      "description": "Érd el az 500 játéknapot."
+      "description": "Érd el az 500 játéknapot.",
+      "img": "days_500.png"
     },
     {
       "id": "days_1000",
       "title": "Törzsgárda",
-      "description": "Érd el az 1000 játéknapot."
+      "description": "Érd el az 1000 játéknapot.",
+      "img": "days_1000.png"
     },
     {
       "id": "days_5000",
       "title": "Időtlen Logisztika",
-      "description": "Érd el az 5000 játéknapot."
+      "description": "Érd el az 5000 játéknapot.",
+      "img": "days_5000.png"
     }
   ]
 }

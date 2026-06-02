@@ -18,6 +18,8 @@ namespace Robot_Simulation.Models
         [ForeignKey("WarehouseId")]
         public virtual WareHouse? WareHouse { get; set; }
 
+        public virtual ICollection<UnlockedAchievement> UnlockedAchievements { get; set; } = new List<UnlockedAchievement>();
+
         public int CurrentDay { get; set; } = 0;
         public int CurrentHour { get; set; } = 0;
 
