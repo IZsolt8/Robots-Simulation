@@ -1,7 +1,7 @@
 # Dokumentáció
 
 ## Játék leirása
-A játék elején a felhasználó 1 db C-3PO pakoló robottal, 1 db Voyager töltő robottal, egy 10 férőhelyes raktárral és 20 000 \$-ral kezdi meg a játékot. A játék során az a cél, hogy minél nagyobb raktárat és bevételt birtokoljon a játékos. Minden játéknap elején a raktár szabad férőhelyének 60%-ának megfelelő csomag érkezik. Csak addig érkezik csomag, amíg van szabad férőhely a raktárban. A játék során kell fizetni karbantartási költséget is, ami minden nap legelején kerül levonásra. A robotoknál már a vásárlásnál meg van adva, hogy mennyi lesz az adott robot fenntartási költsége. A raktár után is kell fizetni karbantartási díjat, ami a raktár aktuális méretének 30% * 200 $. A játék akkor ér véget, ha a játékos egyenlege mínuszba megy. Ekkor már nem tud semmit csinálni abban a játékban, és újat kell kezdenie.
+A játék elején a felhasználó 1 db C-3PO pakoló robottal, 1 db Voyager töltő robottal, egy 10 férőhelyes raktárral és 20 000 dolláral kezdi meg a játékot. A játék során az a cél, hogy minél nagyobb raktárat és bevételt birtokoljon a játékos. Minden játéknap elején a raktár szabad férőhelyének 60%-ának megfelelő csomag érkezik. Csak addig érkezik csomag, amíg van szabad férőhely a raktárban. A játék során kell fizetni karbantartási költséget is, ami minden nap legelején kerül levonásra. A robotoknál már a vásárlásnál meg van adva, hogy mennyi lesz az adott robot fenntartási költsége. A raktár után is kell fizetni karbantartási díjat, ami a raktár aktuális méretének 30% * 200 $. A játék akkor ér véget, ha a játékos egyenlege mínuszba megy. Ekkor már nem tud semmit csinálni abban a játékban, és újat kell kezdenie.
 
 A csomagoknál két típus van, de azon belül többféle csomag létezik. A csomagtípus és a csomag megnevezése random kerül kiválasztásra a játék során. A csomagok lehetséges elnevezéseit a packages.json tartalmazza.
 
@@ -85,6 +85,7 @@ A játéknál minden meg lett valósítva, ami az első mérföldkő leírásáb
 2. Amennyiben a következő nap gomra rányomtunk, ha nem áll rendelkezésre elegendő pénz a karbantartási költségek fizetésére, akkor a program befejezi a játékot és megjelenít egy összesítő felületet, ahol meg tekinthe a játékos a játék során elért eredményeit.
 
 ## 6 Használati esetek diagram
+![alt text](image.png)
 
 ## 7 Osztály diagram
 ```mermaid
