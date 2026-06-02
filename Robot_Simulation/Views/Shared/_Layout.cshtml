@@ -123,9 +123,95 @@
             color: #e74c3c;
             font-weight: bold;
         }
+
+        #gameOverOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 999999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: goFadeIn 0.5s ease;
+        }
+        #gameOverOverlay.visible {
+            display: flex;
+        }
+        @@keyframes goFadeIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        #gameOverBox {
+            background: linear-gradient(160deg, #1a0a0a, #2d0d0d);
+            border: 2px solid #c0392b;
+            border-radius: 16px;
+            padding: 40px 50px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(192, 57, 43, 0.5), 0 0 20px rgba(0,0,0,0.8);
+            max-width: 480px;
+            width: 90%;
+        }
+        #gameOverBox img {
+            max-width: 300px;
+            width: 100%;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 0 20px rgba(192,57,43,0.6));
+        }
+        #gameOverBox p {
+            color: #ecf0f1;
+            font-size: 16px;
+            margin-bottom: 28px;
+            opacity: 0.8;
+        }
+        #gameOverBackBtn {
+            padding: 12px 36px;
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c0392b, #96281b);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(192,57,43,0.4);
+        }
+        #gameOverBackBtn:hover {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(231,76,60,0.5);
+        }
     </style>
 </head>
 <body>
+    <div id="gameOverOverlay">
+        <div id="gameOverBox">
+            <img src="/images/GameOver.png" alt="Game Over" />
+            <p>Az egyenleged nullára csökkent. A játéknak vége!</p>
+            <button id="gameOverBackBtn" onclick="window.location.href='/'">Vissza a főmenübe</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('gameOverOverlay').classList.contains('visible')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+
+        window.showGameOver = function() {
+            var overlay = document.getElementById('gameOverOverlay');
+            if (overlay) {
+                overlay.classList.add('visible');
+                var keys = Object.keys(sessionStorage);
+                keys.forEach(function(k) {
+                    if (k.startsWith('autoDay_')) sessionStorage.setItem(k, 'false');
+                });
+            }
+        };
+    </script>
     @{
         var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
         var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
@@ -358,6 +444,17 @@
                                 console.warn("Achievement ellenőrzési hiba:", achErr);
                             }
 
+                            // Game Over ellenőrzése: isGameOver flag VAGY negatív egyenleg
+                            var isGameOver = (window.gameStats && window.gameStats.isGameOver) ||
+                                             (window.gameStats && window.gameStats.balance < 0);
+                            if (isGameOver) {
+                                stopTimer();
+                                sessionStorage.setItem(AUTO_KEY, 'false');
+                                updateBtnState();
+                                window.showGameOver();
+                                return;
+                            }
+
                             if (sessionStorage.getItem(AUTO_KEY) === "true") {
                                 startTimer();
                             }
@@ -448,6 +545,7 @@
                 gameId: @gameStats.ID,
                 balance: @gameStats.Balance,
                 days: @gameStats.CurrentDay,
+                isGameOver: @(gameStats.IsGameOver ? "true" : "false"),
                 storageSize: @(gameStats.WareHouse?.StorgarSize ?? 10),
                 upgradeCount: @(gameStats.WareHouse?.UpgradesPurchased?.Sum(u => u.Quantity) ?? 0),
                 packerCount: @((gameStats.WareHouse?.Robots?.OfType<Robot_Simulation.Models.PackingRobot>().Count() ?? 1) - 1),
@@ -455,6 +553,12 @@
                 packagesPacked: @(gameStats.WareHouse?.Packages?.Count(p => p.Status) ?? 0),
                 energyCharged: @(gameStats.WareHouse?.Packages?.Where(p => p.Status).Sum(p => p.BatteryCost).ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "0")
             };
+            // Ha az oldal game over állapotban töltődik be, azonnal mutassuk a popupot
+            if (window.gameStats.isGameOver) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.showGameOver();
+                });
+            }
         </script>
         <script src="~/js/achievements.js" asp-append-version="true"></script>
     }

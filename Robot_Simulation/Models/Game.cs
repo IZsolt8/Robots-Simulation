@@ -13,6 +13,8 @@ namespace Robot_Simulation.Models
 
         public int Balance { get; set; } = 20000;
 
+        public bool IsGameOver { get; set; } = false;
+
         public int WarehouseId { get; set; }
 
         [ForeignKey("WarehouseId")]
@@ -47,6 +49,11 @@ namespace Robot_Simulation.Models
                 int warehouseFee = (int)(WareHouse.StorgarSize * 0.3 * 200);
                 int robotFee = WareHouse.Robots?.Sum(r => r.MaintenanceFee) ?? 0;
                 Balance -= (warehouseFee + robotFee);
+
+                if (Balance < 0)
+                {
+                    IsGameOver = true;
+                }
             }
         }
 
