@@ -3,19 +3,19 @@
     {
       "Name": "Kis bővítés",
       "Size": 10,
-      "Price": 5000,
+      "Price": 8000,
       "Img": "upgrade_1.png"
     },
     {
       "Name": "Közepes bővítés",
       "Size": 20,
-      "Price": 12000,
+      "Price": 13000,
       "Img": "upgrade_2.png"
     },
     {
       "Name": "Nagy bővítés",
       "Size": 30,
-      "Price": 25000,
+      "Price": 22000,
       "Img": "upgrade_3.png"
     }
   ],
