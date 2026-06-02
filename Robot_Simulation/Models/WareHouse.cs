@@ -150,7 +150,11 @@ namespace Robot_Simulation.Models
 
         private void ProcessCharging(List<ChargingRobot> chargingRobots, List<PackingRobot> packingRobots)
         {
-            var robotsToCharge = packingRobots.Where(r => r.IsCharging).ToList();
+            var robotsToCharge = packingRobots
+                .Where(r => r.IsCharging)
+                .OrderByDescending(r => r.BatteryLevel)
+                .ToList();
+
             if (!robotsToCharge.Any()) return;
 
             var robotsAssignedThisHour = new HashSet<int>();
@@ -171,12 +175,12 @@ namespace Robot_Simulation.Models
         private List<PackingRobot> GetRobotsForCharging(ChargingRobot chargingRobot, List<PackingRobot> robotsToCharge, HashSet<int> robotsAssignedThisHour)
         {
             var unassignedRobots = robotsToCharge
-                .Where(r => r.IsCharging && !robotsAssignedThisHour.Contains(r.ID))
+                .Where(r => !robotsAssignedThisHour.Contains(r.ID))
                 .ToList();
 
             if (!unassignedRobots.Any())
             {
-                unassignedRobots = robotsToCharge.Where(r => r.IsCharging).ToList();
+                return new List<PackingRobot>();
             }
 
             int capacity = chargingRobot.MaxChargingCapacity > 0 ? chargingRobot.MaxChargingCapacity : 1;
