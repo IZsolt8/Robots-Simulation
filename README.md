@@ -85,7 +85,7 @@ A játéknál minden meg lett valósítva, ami az első mérföldkő leírásáb
 2. Amennyiben a következő nap gomra rányomtunk, ha nem áll rendelkezésre elegendő pénz a karbantartási költségek fizetésére, akkor a program befejezi a játékot és megjelenít egy összesítő felületet, ahol meg tekinthe a játékos a játék során elért eredményeit.
 
 ## 6 Használati esetek diagram
-![alt text](image.png)
+![alt text](img/image.png)
 
 ## 7 Osztály diagram
 ```mermaid
