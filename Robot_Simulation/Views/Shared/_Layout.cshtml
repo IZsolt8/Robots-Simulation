@@ -333,11 +333,29 @@
                             var scriptTag = doc.getElementById("gameStatsScript");
                             if (scriptTag) {
                                 eval(scriptTag.innerText);
-                                if (window.gameStats && window.triggerAchievementPopups) {
-                                }
                                 if (window.renderTrophies) {
                                     window.renderTrophies();
                                 }
+                            }
+
+                            try {
+                                var achResponse = await fetch('/Games/GetUnlockedAchievements?gameId=' + GAME_ID);
+                                var currentIds = await achResponse.json();
+
+                                if (!window.knownUnlockedIds) {
+                                    window.knownUnlockedIds = new Set(currentIds);
+                                } else {
+                                    var newAchs = currentIds.filter(function(id) {
+                                        return !window.knownUnlockedIds.has(id);
+                                    });
+                                    window.knownUnlockedIds = new Set(currentIds);
+
+                                    if (newAchs.length > 0 && window.triggerAchievementPopups) {
+                                        await window.triggerAchievementPopups(newAchs);
+                                    }
+                                }
+                            } catch (achErr) {
+                                console.warn("Achievement ellenőrzési hiba:", achErr);
                             }
 
                             if (sessionStorage.getItem(AUTO_KEY) === "true") {
@@ -380,6 +398,11 @@
                         stopTimer();
                     }
                 });
+
+                fetch('/Games/GetUnlockedAchievements?gameId=' + GAME_ID)
+                    .then(function(r) { return r.json(); })
+                    .then(function(ids) { window.knownUnlockedIds = new Set(ids); })
+                    .catch(function() {});
 
                 if (sessionStorage.getItem(AUTO_KEY) === "true") {
                     startTimer();
@@ -425,7 +448,8 @@
                 gameId: @gameStats.ID,
                 balance: @gameStats.Balance,
                 days: @gameStats.CurrentDay,
-                storageSize: @((gameStats.WareHouse?.StorgarSize ?? 10) - 10),
+                storageSize: @(gameStats.WareHouse?.StorgarSize ?? 10),
+                upgradeCount: @(gameStats.WareHouse?.UpgradesPurchased?.Sum(u => u.Quantity) ?? 0),
                 packerCount: @((gameStats.WareHouse?.Robots?.OfType<Robot_Simulation.Models.PackingRobot>().Count() ?? 1) - 1),
                 chargerCount: @((gameStats.WareHouse?.Robots?.OfType<Robot_Simulation.Models.ChargingRobot>().Count() ?? 1) - 1),
                 packagesPacked: @(gameStats.WareHouse?.Packages?.Count(p => p.Status) ?? 0),

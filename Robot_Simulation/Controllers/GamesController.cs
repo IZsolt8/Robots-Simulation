@@ -29,6 +29,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -53,6 +55,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -84,6 +88,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -103,6 +109,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -146,6 +154,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -165,6 +175,8 @@ namespace Robot_Simulation.Controllers
                     .ThenInclude(w => w.Packages)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Robots)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {

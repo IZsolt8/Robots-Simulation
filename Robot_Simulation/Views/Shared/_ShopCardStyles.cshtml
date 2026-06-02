@@ -231,7 +231,8 @@
                     window.gameStats.balance = result.balance;
                     
                     if (robotType === 'Upgrade' && result.storageSize !== undefined) {
-                        window.gameStats.storageSize = result.storageSize - 10;
+                        window.gameStats.storageSize = result.storageSize;
+                        window.gameStats.upgradeCount = (window.gameStats.upgradeCount || 0) + 1;
                     } else if (robotType === 'PackingRobot') {
                         window.gameStats.packerCount = (window.gameStats.packerCount || 0) + 1;
                     } else if (robotType === 'ChargingRobot') {

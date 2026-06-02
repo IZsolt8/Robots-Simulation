@@ -126,7 +126,9 @@
                     
                     let currentValue = 0;
                     switch (type) {
-                        case 'expansion': currentValue = stats.storageSize; break;
+                        case 'expansion':
+                            currentValue = (targetValue === 1) ? (stats.upgradeCount || 0) : stats.storageSize;
+                            break;
                         case 'packer': currentValue = stats.packerCount; break;
                         case 'charger': currentValue = stats.chargerCount; break;
                         case 'money': currentValue = stats.balance; break;
@@ -137,6 +139,7 @@
                     
                     let isUnlocked = unlockedIds.includes(ach.id) || currentValue >= targetValue;
                     
+                    let displayValue = isUnlocked ? targetValue : Math.floor(currentValue);
                     let progressPercent = Math.min(100, Math.max(0, (currentValue / targetValue) * 100));
                     if (isUnlocked) progressPercent = 100;
                     
@@ -162,7 +165,7 @@
                         
                         let progContainer = document.createElement('div');
                         progContainer.className = "progress-container";
-                        progContainer.title = `${Math.floor(currentValue)} / ${targetValue}`;
+                        progContainer.title = `${displayValue} / ${targetValue}`;
                         
                         let progBar = document.createElement('div');
                         progBar.className = "progress-bar" + (isUnlocked ? " unlocked" : "");
@@ -172,7 +175,7 @@
 
                         let progText = document.createElement('div');
                         progText.className = "progress-text";
-                        progText.innerText = `${Math.floor(currentValue)} / ${targetValue}`;
+                        progText.innerText = `${displayValue} / ${targetValue}`;
                         
                         card.appendChild(img);
                         card.appendChild(title);
@@ -185,13 +188,13 @@
                         card.className = "trophy-card" + (isUnlocked ? " unlocked" : "");
                         card.querySelector('.trophy-img').src = isUnlocked ? `/achievements_image/${ach.img || (ach.id + '.png')}` : '/achievements_image/placeholder.png';
                         card.querySelector('.trophy-title').innerText = isUnlocked ? ach.title : "???";
-                        card.querySelector('.progress-container').title = `${Math.floor(currentValue)} / ${targetValue}`;
+                        card.querySelector('.progress-container').title = `${displayValue} / ${targetValue}`;
                         
                         let progBar = card.querySelector('.progress-bar');
                         progBar.className = "progress-bar" + (isUnlocked ? " unlocked" : "");
                         progBar.style.width = progressPercent + "%";
                         
-                        card.querySelector('.progress-text').innerText = `${Math.floor(currentValue)} / ${targetValue}`;
+                        card.querySelector('.progress-text').innerText = `${displayValue} / ${targetValue}`;
                     }
                 });
                 

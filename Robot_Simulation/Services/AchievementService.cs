@@ -24,6 +24,8 @@ namespace Robot_Simulation.Services
                     .ThenInclude(w => w.Robots)
                 .Include(g => g.WareHouse)
                     .ThenInclude(w => w.Packages)
+                .Include(g => g.WareHouse)
+                    .ThenInclude(w => w.UpgradesPurchased)
                 .FirstOrDefaultAsync(g => g.ID == gameId);
 
             if (game == null) return new List<string>();
@@ -38,7 +40,8 @@ namespace Robot_Simulation.Services
             var newlyUnlocked = new List<string>();
             var unlockedIds = game.UnlockedAchievements.Select(a => a.AchievementId).ToHashSet();
 
-            int storageSize = (game.WareHouse?.StorgarSize ?? 10) - 10;
+            int storageSize = game.WareHouse?.StorgarSize ?? 10;
+            int upgradeCount = game.WareHouse?.UpgradesPurchased?.Sum(u => u.Quantity) ?? 0;
             int packerCount = (game.WareHouse?.Robots?.OfType<PackingRobot>().Count() ?? 1) - 1;
             int chargerCount = (game.WareHouse?.Robots?.OfType<ChargingRobot>().Count() ?? 1) - 1;
             int packagesPacked = game.WareHouse?.Packages?.Count(p => p.Status) ?? 0;
@@ -63,7 +66,11 @@ namespace Robot_Simulation.Services
                 bool isUnlocked = false;
                 switch (type)
                 {
-                    case "expansion": isUnlocked = storageSize >= targetValue; break;
+                    case "expansion":
+                        isUnlocked = targetValue == 1
+                            ? upgradeCount >= 1
+                            : storageSize >= targetValue;
+                        break;
                     case "packer": isUnlocked = packerCount >= targetValue; break;
                     case "charger": isUnlocked = chargerCount >= targetValue; break;
                     case "money": isUnlocked = game.Balance >= targetValue; break;
