@@ -44,57 +44,74 @@ namespace Robot_Simulation.Models
 
         public static List<Packages> GenerateForWarehouse(WareHouse wareHouse, string packageJsonPath, int currentDay)
         {
-            if (!File.Exists(packageJsonPath))
+            var templates = LoadTemplatesFromJson(packageJsonPath);
+            if (!templates.Any() || wareHouse.FreeSpace <= 0)
                 return new List<Packages>();
+
+            int count = CalculateGenerationCount(wareHouse.FreeSpace);
+            var rng = new Random();
+            var result = new List<Packages>();
+
+            for (int i = 0; i < count; i++)
+            {
+                var template = templates[rng.Next(templates.Count)];
+                var package = CreatePackageFromTemplate(template, wareHouse.ID, currentDay, rng);
+                result.Add(package);
+            }
+
+            return result;
+        }
+
+        private static List<PackageTemplate> LoadTemplatesFromJson(string packageJsonPath)
+        {
+            if (!File.Exists(packageJsonPath))
+                return new List<PackageTemplate>();
 
             var jsonString = File.ReadAllText(packageJsonPath);
 
             if (string.IsNullOrWhiteSpace(jsonString))
-                return new List<Packages>();
+                return new List<PackageTemplate>();
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var templates = JsonSerializer.Deserialize<List<PackageTemplate>>(jsonString, options)
-                ?? new List<PackageTemplate>();
+            return JsonSerializer.Deserialize<List<PackageTemplate>>(jsonString, options) 
+                   ?? new List<PackageTemplate>();
+        }
 
-            if (templates.Count == 0)
-                return new List<Packages>();
+        private static int CalculateGenerationCount(int freeSpace)
+        {
+            return Math.Max(1, (int)Math.Floor(freeSpace * 0.6));
+        }
 
-            var rng = new Random();
+        private static Packages CreatePackageFromTemplate(PackageTemplate template, int warehouseId, int currentDay, Random rng)
+        {
+            int storageTime = rng.Next(1, 9);
+            int basePrice = rng.Next(1700, 3901);
+            
+            float multiplier = CalculatePriceMultiplier(storageTime);
+            int finalPrice = (int)(basePrice * multiplier);
+            float batteryCost = rng.Next(1, 5);
 
-            if (wareHouse.FreeSpace <= 0) return new List<Packages>();
-
-            int count = Math.Max(1, (int)Math.Floor(wareHouse.FreeSpace * 0.6));
-
-            var result = new List<Packages>();
-            for (int i = 0; i < count; i++)
+            return new Packages
             {
-                var template = templates[rng.Next(templates.Count)];
-                int storageTime = rng.Next(1, 9);
-                int basePrice = rng.Next(1700, 3901);
+                Type = template.Type,
+                Name = template.Name,
+                StorageTime = storageTime,
+                Price = finalPrice,
+                BatteryCost = batteryCost,
+                Status = false,
+                WareHouseId = warehouseId,
+                CreatedOnDay = currentDay
+            };
+        }
 
-                float multiplier = 1f;
-                if (storageTime == 8)
-                    multiplier = 2f;
-                else if (storageTime >= 4)
-                    multiplier = 1.5f;
-
-                int finalPrice = (int)(basePrice * multiplier);
-                float batteryCost = rng.Next(1, 5);
-
-                result.Add(new Packages
-                {
-                    Type = template.Type,
-                    Name = template.Name,
-                    StorageTime = storageTime,
-                    Price = finalPrice,
-                    BatteryCost = batteryCost,
-                    Status = false,
-                    WareHouseId = wareHouse.ID,
-                    CreatedOnDay = currentDay
-                });
-            }
-
-            return result;
+        private static float CalculatePriceMultiplier(int storageTime)
+        {
+            if (storageTime == 8)
+                return 2f;
+            if (storageTime >= 4)
+                return 1.5f;
+            
+            return 1f;
         }
 
         private class PackageTemplate
