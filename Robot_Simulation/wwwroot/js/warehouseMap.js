@@ -62,7 +62,21 @@
         { x: 3.5, y: 9 }, { x: 6.5, y: 9 }, { x: 9.5, y: 9 }, { x: 12.5, y: 9 }, { x: 15.5, y: 9 }
     ];
 
-    let gameId = new URLSearchParams(window.location.search).get('id') || 'default';
+    function getGameIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let id = urlParams.get('id');
+        if (id) return id;
+
+        const pathParts = window.location.pathname.split('/');
+        for (let i = pathParts.length - 1; i >= 0; i--) {
+            if (pathParts[i] && !isNaN(pathParts[i])) {
+                return pathParts[i];
+            }
+        }
+        return 'default';
+    }
+
+    let gameId = getGameIdFromUrl();
     const sessionKey = 'robotPositions_' + gameId;
     let robots = {};
 
@@ -214,12 +228,11 @@
     }
 
     function moveRobots() {
-        const autoKey = sessionStorage.getItem(
-            Object.keys(sessionStorage).find(k => k.startsWith('autoDay_'))
-        );
+        const autoKey = sessionStorage.getItem('autoDay_' + gameId);
         if (autoKey !== "true") return;
 
         const speed = 0.05;
+        let changed = false;
         for (let id in robots) {
             let r = robots[id];
             if (r.type === 'charging') continue;
@@ -231,10 +244,15 @@
             if (dist > 0.05) {
                 r.x += (dx / dist) * speed;
                 r.y += (dy / dist) * speed;
-            } else {
+                changed = true;
+            } else if (r.x !== r.targetX || r.y !== r.targetY) {
                 r.x = r.targetX;
                 r.y = r.targetY;
+                changed = true;
             }
+        }
+        if (changed) {
+            sessionStorage.setItem(sessionKey, JSON.stringify(robots));
         }
     }
 
@@ -266,8 +284,6 @@
                 ctx.arc(px + iconSize / 2, py + iconSize / 2, iconSize / 2 - 4, 0, Math.PI * 2);
                 ctx.fill();
             }
-
-
         }
 
         for (let id in robots) {
@@ -289,9 +305,6 @@
                 ctx.fill();
             }
         }
-
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'alphabetic';
     }
 
     let lastDataFetch = 0;
@@ -300,6 +313,18 @@
 
     function renderLoop() {
         const canvas = document.getElementById('warehouseCanvas');
+        
+        let now = Date.now();
+        if (now - lastDataFetch > 1000) {
+            let serverRobots = getRobotData();
+            if (serverRobots && serverRobots.length > 0) {
+                updateRobotTargets(serverRobots);
+            }
+            lastDataFetch = now;
+        }
+
+        moveRobots();
+
         if (canvas) {
             if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
                 canvas.width  = canvas.clientWidth;
@@ -313,20 +338,13 @@
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            let now = Date.now();
-            if (now - lastDataFetch > 1000) {
-                let serverRobots = getRobotData();
-                updateRobotTargets(serverRobots);
-                lastDataFetch = now;
-            }
-
-            moveRobots();
             drawGrid(ctx);
             drawRobots(ctx);
         }
 
         requestAnimationFrame(renderLoop);
     }
+
 
     requestAnimationFrame(renderLoop);
 })();
